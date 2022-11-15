@@ -84,20 +84,20 @@ function cn(...classes: string[]) {
 }
 
 
-// const addTestImage = async () => {
-//   try {
-//     await supabase.from(IMAGE_TABLE).insert([{
-//       name: 'nmame',
-//       href: 'href',
-//       imageSrc: 'imageSrc',
-//       userName: 'userName'
-//     }]);
+const addTestImage = async () => {
+  try {
+    await supabase.from('images').insert([{
+      name: 'test',
+      href: 'test',
+      imageSrc: 'test',
+      userName: 'test'
+    }]);
   
-//     console.log('완료!');
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
+    console.log('완료!');
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 
 
@@ -137,9 +137,9 @@ export default function Gallery( { images }: { images: Image[]} ) {
       DB 테스트
     </button><br/> */}
 
-    {/* <button className="bg-blue-100" onClick={addTestImage}>
+    <button className="bg-blue-100" onClick={addTestImage}>
       테스트 이미지를 추가
-    </button> */}
+    </button>
     <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
       {/* <BlurImage /> */}
       {images && images.map((image) => (
