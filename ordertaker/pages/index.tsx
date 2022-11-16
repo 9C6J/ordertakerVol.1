@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image'
 import cat from "../public/cat.png";
 
-import { supabase } from './api/supbase';
+import { supabase } from './api/supabase';
 
 type Image = {
   id: number;
@@ -56,21 +56,33 @@ type Image = {
 export const getServerSideProps = async () => {
   const { data, status, statusText } = await supabase.from('images').select('*');
   console.log("getServerSideProps ====");
+  // console.log(req);
+
   console.log(data);
   console.log(status);
   console.log(statusText);
 
-  // if (!data) {
-  //     return { 
-  //       props: {
-  //         images: []
-  //       }, 
-  //       // redirect: { 
-  //       //   destination: '/login',
-  //       //   permanent: false 
-  //       // } 
-  //     }
-  // }
+
+  if (!data) {
+      return { 
+        props: {
+          images: [
+            {
+              id: 1,
+              created_at: "test",
+              name: "차",
+              href: "https://avatars.githubusercontent.com/u/105836469?s=200&v=4",
+              userName: "차",
+              imageSrc: "https://avatars.githubusercontent.com/u/105836469?s=200&v=4"
+            }
+          ]
+        }, 
+        // redirect: { 
+        //   destination: '/login',
+        //   permanent: false 
+        // } 
+      }
+  }
 
   return{
     props: {
@@ -92,8 +104,8 @@ const addTestImage = async () => {
   try {
     await supabase.from('images').insert([{
       name: 'test',
-      href: 'test',
-      imageSrc: 'test',
+      href: 'https://avatars.githubusercontent.com/u/105836469?s=200&v=4',
+      imageSrc: 'https://avatars.githubusercontent.com/u/105836469?s=200&v=4',
       userName: 'test'
     }]);
   
@@ -125,10 +137,15 @@ function BlurImage({ image }: { image: Image }) {
   return (
     <a href={image.imageSrc} className="group">
       <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
-        {image.imageSrc}
+        
+        {/* <img
+          alt=""
+          src={image.imageSrc}
+        /> */}
+        
         <Image
           alt=""
-          src="https://avatars.githubusercontent.com/u/105836469?s=200&v=4"
+          src={image.imageSrc}
           layout="fill"
           objectFit="cover"
           className={cn(
@@ -152,45 +169,55 @@ export default function Gallery( { images }: { images: Image[]} ) {
     []
   );
 
-  async function getTasks() {
-    const { data, status, statusText } = await supabase.from('images').select('*');
+  // async function getTasks() {
+  //   const { data } = await supabase.from('images').select('*');
 
-    setItem(data);
-    console.log(data);
-    console.log(status);
-    console.log(statusText);
-  }
+  //   setItem( data );
+  // }
 
   // Run the getTasks function when the component is mounted
-  useEffect(() => {
-    getTasks();
-  }, []);
+  // useEffect(() => {
+  //   getTasks();
+  // }, []);
 
   return (
 
-    <div className="bg-slate-100 max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-      
-    <button className="bg-blue-100" onClick={showTestData}>
-      DB 테스트
-    </button><br/>
+    <div className="flex flex-col items-center justify-start py-36 min-h-screen">
+      <Head>
+        <title>Supabase Auth Tutorial</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-    <button className="bg-blue-100" onClick={addTestImage}>
-      테스트 이미지를 추가
-    </button>
-    <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-      {/* <BlurImage /> */}
-      {images && images.map((image) => (
-          <BlurImage key={image.id} image={image} />
-        ))}
+      <h1 className="text-6xl font-bold">
+        Welcome to{" "}
+        <a className="text-blue-600" href="https://nextjs.org">
+          Next.js! with Supabase
+        </a>
+      </h1>
+    </div>
+  //   <div className="bg-slate-100 max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+      
+  //   <button className="bg-blue-100" onClick={showTestData}>
+  //     DB 테스트
+  //   </button><br/>
+
+  //   <button className="bg-blue-100" onClick={addTestImage}>
+  //     테스트 이미지를 추가
+  //   </button>
+  //   <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+  //     {/* <BlurImage /> */}
+  //     {images && images.map((image) => (
+  //         <BlurImage key={image.id} image={image} />
+  //       ))}
 
         
-      {item && item.map((image) => (
-          <BlurImage key={image.id} image={image} />
-        ))}
+  //     {item && item.map((image) => (
+  //         <BlurImage key={image.id} image={image} />
+  //       ))}
 
 
-    </div>
-  </div>
+  //   </div>
+  // </div>
   )
 }
 
