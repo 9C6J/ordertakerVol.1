@@ -1,8 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { FaLock, FaLockOpen } from "react-icons/fa";
 import { supabase } from "./api/supabase";
 import classNames from "classnames";
-import { useFormFields, MessageProps, useMessage } from "../lib/utils";
+// import { useFormFields, MessageProps, useMessage } from "../lib/utils";
+import { useFormFields } from "../lib/utils";
+import { useMessage } from "../lib/message";
+ 
 
 type FormFieldProps = {
   email: string;
@@ -16,19 +19,20 @@ const FORM_VALUES: FormFieldProps = {
   password: "",
 };
 
-const MESSAGE_VALUES: MessageProps = {
-  type: "default",
-  payload: "",
-};
+// const MESSAGE_VALUES: MessageProps = {
+//   type: "default",
+//   payload: "",
+// };
 
 const Auth: React.FC = (props) => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  const { messages, handleMessage } = useMessage();
   const [values, handleChange, resetFormFields] =
     useFormFields<FormFieldProps>(FORM_VALUES);
 
-  const [message, handleMessage] = useMessage<MessageProps>(MESSAGE_VALUES);
+  // const [message, handleMessage] = useMessage<MessageProps>(MESSAGE_VALUES);
 
   // sign-up a user with provided details
   const signUp = async (payload: SupabaseAuthPayload) => {
@@ -37,18 +41,18 @@ const Auth: React.FC = (props) => {
       const { error } = await supabase.auth.signUp(payload);
       if (error) {
         console.log(error);
-        handleMessage({ payload: error.message, type: "error" });
+        handleMessage?.({ message: error.message, type: "error" });
       } else {
-        handleMessage({
-          payload:
+        handleMessage?.({
+          message:
             "Signup successful. Please check your inbox for a confirmation email!",
           type: "success",
         });
       }
-    } catch (error) {
+    } catch (error : any) {
       console.log(error);
-      handleMessage({
-        payload: error.error_description || error,
+      handleMessage?.({
+        message: error.error_description || error,
         type: "error",
       });
     } finally {
@@ -57,23 +61,23 @@ const Auth: React.FC = (props) => {
   };
 
   // sign-in a user with provided details
-  const signIn = async (payload: SupabaseAuthPayload) => {
+  const signIn = async (message: SupabaseAuthPayload) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signinwithpassword(payload);
+      const { error } = await supabase.auth.signInWithPassword(message);
       if (error) {
         console.log(error);
-        handleMessage({ payload: error.message, type: "error" });
+        handleMessage?.({ message: error.message, type: "error" });
       } else {
-        handleMessage({
-          payload: "Log in successful. I'll redirect you once I'm done",
+        handleMessage?.({
+          message: "Log in successful. I'll redirect you once I'm done",
           type: "success",
         });
       }
-    } catch (error) {
+    } catch (error : any) {
       console.log(error);
-      handleMessage({
-        payload: error.error_description || error,
+      handleMessage?.({
+        message: error.error_description || error,
         type: "error",
       });
     } finally {
@@ -100,7 +104,8 @@ const Auth: React.FC = (props) => {
           {isSignIn ? "Log In" : "Sign Up"}
         </h1>
       </div>
-      {message.payload && (
+      {messages &&
+       messages.map((message, index) => (
         <div
           className={classNames(
             "shadow-md rounded px-3 py-2 text-shadow transition-all mt-2 text-center",
@@ -111,9 +116,9 @@ const Auth: React.FC = (props) => {
               : "bg-gray-100 text-gray-800"
           )}
         >
-          {message?.payload}
+          {message?.message}
         </div>
-      )}
+      ))}
       <form
         onSubmit={handleSumbit}
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
