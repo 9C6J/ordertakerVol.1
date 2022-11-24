@@ -1,4 +1,4 @@
-import React, { createContext, FunctionComponent, useState } from "react";
+import React, { createContext, useState } from "react";
 import { MessageProps } from "./message.types";
 
 export type MessageContextProps = {

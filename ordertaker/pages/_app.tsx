@@ -3,7 +3,10 @@ import type { AppProps } from 'next/app'
 import Head from "next/head";
 import '../styles/globals.css'
 import Layout from "../components/Layout";
+
+
 import { MessageProvider } from "../lib/message";
+import { AuthProvider } from "../lib/auth";
 
 
 function MyApp({ Component, pageProps}: AppProps) {
@@ -14,9 +17,11 @@ function MyApp({ Component, pageProps}: AppProps) {
       </Head>
 
       <MessageProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <AuthProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AuthProvider>
       </MessageProvider>
 
     </React.Fragment>
