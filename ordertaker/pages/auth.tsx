@@ -3,8 +3,10 @@ import { FaLock, FaLockOpen } from "react-icons/fa";
 import { supabase } from "./api/supabase";
 import classNames from "classnames";
 // import { useFormFields, MessageProps, useMessage } from "../lib/utils";
+
 import { useFormFields } from "../lib/utils";
 import { useMessage } from "../lib/message";
+import { useAuth } from "../lib/auth";
  
 
 type FormFieldProps = {
@@ -12,12 +14,14 @@ type FormFieldProps = {
   password: string;
 };
 
-type SupabaseAuthPayload = FormFieldProps; // type alias
-
 const FORM_VALUES: FormFieldProps = {
   email: "",
   password: "",
 };
+
+
+type SupabaseAuthPayload = FormFieldProps; // type alias
+
 
 // const MESSAGE_VALUES: MessageProps = {
 //   type: "default",
@@ -26,69 +30,19 @@ const FORM_VALUES: FormFieldProps = {
 
 const Auth: React.FC = (props) => {
   const [isSignIn, setIsSignIn] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const { loading, signIn, signUp } = useAuth();
+  const { messages } = useMessage();
 
-  const { messages, handleMessage } = useMessage();
+
   const [values, handleChange, resetFormFields] =
     useFormFields<FormFieldProps>(FORM_VALUES);
 
   // const [message, handleMessage] = useMessage<MessageProps>(MESSAGE_VALUES);
 
-  // sign-up a user with provided details
-  const signUp = async (payload: SupabaseAuthPayload) => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.auth.signUp(payload);
-      if (error) {
-        console.log(error);
-        handleMessage?.({ message: error.message, type: "error" });
-      } else {
-        handleMessage?.({
-          message:
-            "Signup successful. Please check your inbox for a confirmation email!",
-          type: "success",
-        });
-      }
-    } catch (error : any) {
-      console.log(error);
-      handleMessage?.({
-        message: error.error_description || error,
-        type: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // sign-in a user with provided details
-  const signIn = async (message: SupabaseAuthPayload) => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword(message);
-      if (error) {
-        console.log(error);
-        handleMessage?.({ message: error.message, type: "error" });
-      } else {
-        handleMessage?.({
-          message: "Log in successful. I'll redirect you once I'm done",
-          type: "success",
-        });
-      }
-    } catch (error : any) {
-      console.log(error);
-      handleMessage?.({
-        message: error.error_description || error,
-        type: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Form submit handler to call the above function
   const handleSumbit = (event: React.FormEvent) => {
     event.preventDefault();
-    isSignIn ? signIn(values) : signUp(values);
+    isSignIn ? signIn?.(values) : signUp?.(values);
     resetFormFields();
   };
 
