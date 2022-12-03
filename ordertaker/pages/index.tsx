@@ -191,7 +191,7 @@ export default function Gallery( { images }: { images: Image[]} ) {
       <h1 className="text-6xl font-bold">
         Welcome to{" "}
         <a className="text-blue-600" href="https://nextjs.org">
-          Next.js! with Supabase
+          Next.js! with Supabase1
         </a>
       </h1>
     </div>
