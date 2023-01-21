@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { useState, useEffect } from 'react';
 import Image from 'next/image'
 import cat from "../public/cat.png";
+import orange from "../public/orange.jpeg";
 
 import { supabase } from './api/supabase';
 
@@ -164,7 +165,7 @@ function BlurImage({ image }: { image: Image }) {
 }
 
 export default function Gallery( { images }: { images: Image[]} ) {
-
+  const [isLoading, setLoading] = useState(true);
   const [item, setItem] = useState(
     []
   );
@@ -189,11 +190,24 @@ export default function Gallery( { images }: { images: Image[]} ) {
       </Head>
 
       <h1 className="text-6xl font-bold">
-        Welcome to{" "}
+        Welcome to 🍊{" "}
         <a className="text-blue-600" href="https://nextjs.org">
-          Next.js! with Supabase1
+          with Next.js
         </a>
       </h1>
+      <Image
+          alt=""
+          src={orange}
+          width={700}
+          objectFit="cover"
+          className={cn(
+            'duration-700 ease-in-out group-hover:opacity-75',
+            isLoading
+              ? 'scale-110 blur-2xl grayscale'
+              : 'scale-100 blur-0 grayscale-0'
+          )}
+          onLoadingComplete={() => setLoading(false)}
+      />
     </div>
   //   <div className="bg-slate-100 max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
       
