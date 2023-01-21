@@ -148,26 +148,20 @@ type Image = {
   imageSrc: string;
 };
 
-const Gallery = (data:Image[]|any) => {
+const Gallery = (data:any) => {
 
   // const [aImages, setImages] = useState<Image | null>(data);
   //   console.log(props)
   // }, []);
 
-  console.log(data)
-
-  let image :Image[] = [{
-    id: 123,
-    created_at: "test",
-    name: "test",
-    href: "test",
-    userName: "test",
-    imageSrc: "test"
-  }]
-
-  
-  
-
+  // let image :Image[] = [{
+  //   id: 123,
+  //   created_at: "test",
+  //   name: "test",
+  //   href: "test",
+  //   userName: "test",
+  //   imageSrc: "test"
+  // }]
     //   <div className="bg-slate-100 max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
       
   //   <button className="bg-blue-100" onClick={showTestData}>
@@ -182,25 +176,46 @@ const Gallery = (data:Image[]|any) => {
 
   return (
     <div className="container px-5 py-10 mx-auto w-2/3">
-
       {/* <BlurImage image={image}/> */}
       <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
         {data.images && data.images.map((image : Image) => (
             <BlurImage key={image.id} image={image} />
-          ))}
-          {/* {image && image.map((image : Image) => (
-            <BlurImage key={image.id} image={image} />
-          ))} */}
-
+        ))}
       </div>
+      <FileUpload/>
     </div>
   );
 };
 
-// function FileUpload(){
+function FileUpload(){
+  // https://www.youtube.com/watch?v=yLdOpLk7bsI&t=1s
+  
+    return(
+      <div>
+        <input
+          type="file"
+          accept="image/*"
+          id="file_input"
+          className="
+          block w-auto
+          text-sm
+          text-gray-900
+          bg-gray-50 
+          rounded-lg border
+          border-gray-300
+          cursor-poitner
+          dark:text-gray-400
+          focus:outline-none
+          dark:bg-gray-700
+          dark:border-gray-600
+          dark:placeholder-gray-400
+          "
+        
+        />
+      </div>
 
-//     return()
+    )
 
-// }
+}
   
 export default Gallery;
