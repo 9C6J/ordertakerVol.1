@@ -22,6 +22,12 @@ const Navbar = () => {
             {/* primary nav */}
             <div className="hidden md:flex items-center space-x-1">
               <a
+                href="/gallery"
+                className="py-5 px-3 text-gray-700 hover:text-gray-900"
+              >
+                Gallery
+              </a>
+              <a
                 href="/features"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
@@ -76,6 +82,9 @@ const Navbar = () => {
 
       {/* mobile menu items */}
       <div className={`${!menuToggle ? "hidden" : ""} md:hidden`}>
+        <a href="/gallery" className="block py-2 px-4 text-sm hover:bg-gray-200">
+          Gallery
+        </a>
         <a
           href="/features"
           className="block py-2 px-4 text-sm hover:bg-gray-200"
