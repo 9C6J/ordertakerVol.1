@@ -4,6 +4,9 @@ import { User } from "@supabase/supabase-js";
 import { useMessage, MessageProps } from "../message";
 import { SupabaseAuthPayload } from "./auth.types";
 
+import Router from "next/router";
+
+
 export type AuthContextProps = {
   user : User | any;
   signUp : (payload: SupabaseAuthPayload) => void;
@@ -29,6 +32,7 @@ export const AuthProvider = (props : ContainerProps ) => {
   const [loading, setLoading] = useState(false);
   
   const [user, setUser] = useState<Partial<User>>({});
+  // const [user, setUser] = useState<User>();
   const [userLoading, setUserLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -94,34 +98,49 @@ export const AuthProvider = (props : ContainerProps ) => {
   const signOut = async() => await supabase.auth.signOut();
 
   useEffect(() => {
-    // const user = supabase.auth.getUser();
+    // const user = supabase.auth.user();
     // const user = supabase.auth.getSzession();
-    const user =  supabase.auth.getUser()
-
-    if (!!user) {
-      setUser({});
+    // const { data : {session},} = supabase.auth.getSession();
+    // const { data : {session}} =  supabase.auth.getUser();
+    const user =  supabase.auth.getUser().then((response)=>{
+      console.log("====1",response)
+      // setUser(response.data.user)
+      if (response.data.user) {
+        setUser(response.data.user);
+        setUserLoading(false);
+        setLoggedIn(true);
+        // Router.push("/profile");
+      }else{
+        setUserLoading(false);
+      }
+    })
+    .catch((err)=>{
+      console.error(err);
+    })
+    .finally(()=>{
       setUserLoading(false);
-      setLoggedIn(true);
-      // Router.push("/profile");
+    });
 
-    }else{
-      setUserLoading(false);
-    }
+
     const { data : authListener} = supabase.auth.onAuthStateChange(
       async(event, session) => {
+        console.log("====authStateChange :",event)
         const user = session?.user! ?? null;
+        console.log("====session :",session)
+
         setUserLoading(false);
         if (user) {
+
           setUser(user);
           setLoggedIn(true);
-          // Router.push("/profile");
-          console.log("/profile")
+          Router.push("/profile");
         } else {
+
           setUser({});
           setLoading(false);
           setLoggedIn(false);
-          // Router.push("/auth");
-          console.log("/auth")
+          Router.push("/auth");
+          // console.log("/auth")
 
         }
       }
@@ -130,6 +149,9 @@ export const AuthProvider = (props : ContainerProps ) => {
     return () => {
       authListener.subscription.unsubscribe();
     }
+
+    // return { user, userLoading }
+
     
   },[]);
   

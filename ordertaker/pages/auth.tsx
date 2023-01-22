@@ -31,7 +31,7 @@ type SupabaseAuthPayload = FormFieldProps; // type alias
 const Auth: React.FC = (props) => {
   const [isSignIn, setIsSignIn] = useState(true);
   const { loading, signIn, signUp } = useAuth();
-  const { messages } = useMessage();
+  const { messages, handleMessage } = useMessage();
 
 
   const [values, handleChange, resetFormFields] =
@@ -55,7 +55,7 @@ const Auth: React.FC = (props) => {
           <FaLock className="w-6 h-6" />
         )}
         <h1 className="text-2xl md:text-4xl text-gray-700 font-semibold">
-          {isSignIn ? "Log In" : "Sign Up"}
+          {isSignIn ? "'Log' In" : "Sign Up"}
         </h1>
       </div>
       {messages &&
