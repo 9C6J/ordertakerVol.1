@@ -4,12 +4,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log("req.query.secret===",req.query.secret);
+  console.log("req 는 ",req);
+  console.log("req.query.secret 는",req.query.secret);
+  console.log("process.env.REVALIDATE_SECRET",process.env.REVALIDATE_SECRET);
 
   // Check for secret to confirm this is a valid request
   if (req.query.secret !== process.env.REVALIDATE_SECRET) {
-    console.log("유효하지 않은 토큰");
-    return res.status(401).json({ message: '유효하지 않은 토큰' })
+    console.log("유효하지 않은 토큰1");
+    return res.status(401).json({ message: '유효하지 않은 토큰2' })
   }
 
   try {
