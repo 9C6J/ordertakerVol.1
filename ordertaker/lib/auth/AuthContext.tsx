@@ -133,13 +133,13 @@ export const AuthProvider = (props : ContainerProps ) => {
 
           setUser(user);
           setLoggedIn(true);
-          Router.push("/profile");
+          // Router.push("/profile");
         } else {
 
           setUser({});
           setLoading(false);
           setLoggedIn(false);
-          Router.push("/auth");
+          // Router.push("/auth");
           // console.log("/auth")
 
         }
