@@ -111,34 +111,5 @@ export default function Main( { images }: { images: Image[]} ) {
           onLoadingComplete={() => setLoading(false)}
       />
     </div>
-  //   <div className="bg-slate-100 max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-      
-  //   <button className="bg-blue-100" onClick={showTestData}>
-  //     DB 테스트
-  //   </button><br/>
-
-  //   <button className="bg-blue-100" onClick={addTestImage}>
-  //     테스트 이미지를 추가
-  //   </button>
-  //   <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-  //     {/* <BlurImage /> */}
-  //     {images && images.map((image) => (
-  //         <BlurImage key={image.id} image={image} />
-  //       ))}
-
-        
-  //     {item && item.map((image) => (
-  //         <BlurImage key={image.id} image={image} />
-  //       ))}
-
-
-  //   </div>
-  // </div>
   )
 }
-
-// max-w-2xl : max-width: 42rem;
-// sm: lg: breakpoint
-// x 좌우 , y 위아래
-// padding ex) px, py / pt(top), pr(right), pb(bottom), pl(left) 
-
