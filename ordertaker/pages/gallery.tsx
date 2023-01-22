@@ -31,7 +31,8 @@ const IMAGE_VALUES: ImageProps = {
 };
 
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
+  // export const getServerSideProps = async () => {
   // const { data , status, statusText } = await supabase.from('images').select('*');
   const { data , status, statusText } = await supabase.from('images').select('*');
   console.log("getServerSideProps ====");

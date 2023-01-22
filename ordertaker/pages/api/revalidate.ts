@@ -4,6 +4,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log("revalidate");
+
+  
   // Check for secret to confirm this is a valid request
   if (req.query.secret !== process.env.REVALIDATE_SECRET) {
     return res.status(401).json({ message: 'Invalid token' })
@@ -11,6 +14,7 @@ export default async function handler(
 
   try {
     // Regenerate our index route showing the images
+    
     await res.revalidate('/')
     return res.json({ revalidated: true })
   } catch (err) {
