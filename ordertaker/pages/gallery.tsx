@@ -151,9 +151,9 @@ function cn(...classes: string[]) {
 
 
 
-const Gallery = (data:any) => {
+const Gallery = ({images} : { images : Image[]}) => {
 
-  const [aImages, setImages] = useState(data.images);
+  // const [aImages, setImages] = useState(data.images);
 
   // Run the getTasks function when the component is mounted
   // useEffect(() => {
@@ -183,7 +183,7 @@ const Gallery = (data:any) => {
         {/* {data.images && data.images.map((image : Image) => (
             <BlurImage key={image.id} image={image} />
         ))} */}
-        {data.images && data.images.map((image : Image) => (
+        {images && images.map((image : Image) => (
             <BlurImage key={image.id} image={image} />
         ))}
       </div>
