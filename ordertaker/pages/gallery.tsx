@@ -31,7 +31,8 @@ const IMAGE_VALUES: ImageProps = {
 };
 
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
+  // export const getServerSideProps = async () => {
   // const { data , status, statusText } = await supabase.from('images').select('*');
   const { data , status, statusText } = await supabase.from('images').select('*');
   console.log("getServerSideProps ====");
@@ -113,9 +114,31 @@ function BlurImage({ image }: { image: Image }) {
       <p className="mt-1 text-lg font-medium text-gray-900">{image.name}</p>
     </a>
   )
-}
+};
 
-;
+const addTestImage = async () => {
+  try {
+    await supabase.from('images').insert([{
+      name: 'undefined-study',
+      href: 'https://github.com/undefined-study',
+      userName: 'ahnanne',
+      imageSrc: 'https://avatars.githubusercontent.com/u/105836469?s=200&v=4',
+    }]);
+  
+    console.log('완료!');
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+type Image = {
+  id: number;
+  created_at: string;
+  name: string;
+  href: string;
+  userName: string;
+  imageSrc: string;
+};
 
 
 /**
@@ -126,14 +149,7 @@ function cn(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-type Image = {
-  id: number;
-  created_at: string;
-  name: string;
-  href: string;
-  userName: string;
-  imageSrc: string;
-};
+
 
 const Gallery = (data:any) => {
 
@@ -157,9 +173,7 @@ const Gallery = (data:any) => {
   //     DB 테스트
   //   </button><br/>
 
-  //   <button className="bg-blue-100" onClick={addTestImage}>
-  //     테스트 이미지를 추가
-  //   </button>
+
   
   // </div>
 
@@ -174,6 +188,10 @@ const Gallery = (data:any) => {
         ))}
       </div>
       <FileUpload/>
+
+        <button className="bg-blue-100" onClick={addTestImage}>
+          테스트 이미지를 추가
+        </button>
     </div>
   );
 };

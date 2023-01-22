@@ -24,7 +24,7 @@ const ProfilePage = ({}) => {
           to view the page's full content.
         </div>
       )}
-      {user && (
+      {user && ( 
         <div>
           <button
             className="border bg-gray-500 border-gray-600 text-white px-3 py-2 rounded w-full text-center transition duration-150 shadow-lg"
