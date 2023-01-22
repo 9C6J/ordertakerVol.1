@@ -13,7 +13,7 @@ export default async function handler(
 
   try {
     // 페이지 재생성
-    await res.revalidate('/');
+    await res.revalidate('/gallery');
     return res.json({ revalidated: true });
   } catch (err) {
     // 만약 에러가 있다면, Next.js는 기존에 성공적으로 생성되어있던 페이지를 보여줄 것이다.
