@@ -240,7 +240,8 @@ function FileUpload(){
           imageSrc: sPath,
           userName: 'test'
         }]);
-      
+        location.reload();
+        
         console.log('완료!');
       } catch (err) {
         console.error(err);
