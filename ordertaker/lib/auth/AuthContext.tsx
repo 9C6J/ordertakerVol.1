@@ -1,6 +1,6 @@
 import { createContext, FunctionComponent, useEffect, useState } from "react";
 import { supabase } from "../../pages/api/supabase";
-import { AuthUser } from "@supabase/supabase-js";
+import { AuthUser, AuthChangeEvent,Session} from "@supabase/supabase-js";
 import { useMessage, MessageProps } from "../message";
 import { SupabaseAuthPayload } from "./auth.types";
 
@@ -93,12 +93,24 @@ export const AuthProvider = (props : ContainerProps ) => {
     }
   };
 
+  //로그아웃
   const signOut = async() => await supabase.auth.signOut();
 
-  useEffect(() => {
+  // Server Side 보안 로그인시 Session설정
+  // const setServerSession = async(session: Session)=>{
+  //   console.log("====setSession :",session);
+  //   // supabase.auth.setSession(session);
     
+  //   // await fetch("/api/auth", {
+  //   //   method: "POST",
+  //   //   headers: new Headers({ "Content-Type": "application/json"}),
+  //   //   credentials: "same-origin",
+  //   //   body: JSON.stringify({event, session})
+  //   // })
+  // }
+  useEffect(() => {
     const user =  supabase.auth.getUser().then((response)=>{
-      console.log("====useEffect :",event);
+      console.log("====user :",response?.data?.user);
       
       if (response.data.user) {
         setUser(response.data.user);
@@ -124,9 +136,13 @@ export const AuthProvider = (props : ContainerProps ) => {
         console.log("====authStateChange :",event);
 
         const user = session?.user! ?? null;
-        console.log("====session :",session);
         setUserLoading(false);
 
+        // 쿠키 세션설정
+        // if(session){
+        //   await setServerSession(session);
+        // }
+     
         if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
           // delete cookies on sign out
           const expires = new Date(0).toUTCString()
@@ -136,6 +152,7 @@ export const AuthProvider = (props : ContainerProps ) => {
           setLoading(false);
           setLoggedIn(false);
           Router.push("/auth");
+
         } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           const maxAge = 100 * 365 * 24 * 60 * 60 // 100 years, never expires
           document.cookie = `my-access-token=${session?.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
@@ -143,6 +160,7 @@ export const AuthProvider = (props : ContainerProps ) => {
           setUser(user);
           setLoggedIn(true);
           Router.push("/");
+
         }
 
         return () => {
@@ -150,8 +168,6 @@ export const AuthProvider = (props : ContainerProps ) => {
         };
       }
     )
-    
-    
   },[]);
   
   return (

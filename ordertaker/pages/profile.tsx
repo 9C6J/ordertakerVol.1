@@ -7,23 +7,25 @@ import { supabase } from './api/supabase';
 import { User } from "@supabase/supabase-js";
 
 
-export type NextAppPageUserProps = {
-  props: {
-    user: User;
-    loggedIn: boolean;
-  };
-};
+// Server Side 보안
+// export type NextAppPageUserProps = {
+//   props: {
+//     user: User | null;
+//     loggedIn: boolean;
+//   };
+// };
 
-export type NextAppPageRedirProps = {
-  redirect: {
-    destination: string;
-    permanent: boolean;
-  };
-};
+// export type NextAppPageRedirProps = {
+//   redirect: {
+//     destination: string;
+//     permanent: boolean;
+//   };
+// };
 
-export type NextAppPageServerSideProps =
-  | NextAppPageUserProps
-  | NextAppPageRedirProps;
+// export type NextAppPageServerSideProps =
+//   | NextAppPageUserProps
+//   | NextAppPageRedirProps
+//   | any;
 
 // export const getServerSideProps: GetServerSideProps = async ({
 //   req,
@@ -31,23 +33,27 @@ export type NextAppPageServerSideProps =
 //   // const { user } = await supabase.auth.api);
 //   // const { user } = supabase.auth.getSession();
 
-//   const refreshToken = req.cookies['my-refresh-token']
-//   const accessToken = req.cookies['my-access-token']
-
-//   if (refreshToken && accessToken) {
-//     await supabase.auth.setSession({
-//       refresh_token: refreshToken,
-//       access_token: accessToken,
-//     })
-//   } else {
-//     // make sure you handle this case!
-//     throw new Error('User is not authenticated.')
-//   }
-
 //   // returns user information
-//   const { data, error } = await supabase.auth.getUser();
+//   // const { data, error } = await supabase.auth.getUser();
+//   // const { data: { user } } = await supabase.auth.getUser();
 
-//   if (!data) {
+//   const { data} =  supabase.auth.getUser().then((response)=>{
+
+//     return {
+//       props: {
+//         user: response.data.user,
+//         loggedIn: !!user
+//       }
+//     };
+//     // return response;
+//   })
+//   .catch((err)=>{
+//     console.error(err);
+//   })
+//   .finally(()=>{
+//   });
+
+//   if (!user) {
 //     return {
 //       redirect: {
 //         destination: "/auth",
@@ -56,33 +62,26 @@ export type NextAppPageServerSideProps =
 //     };
 //   }
 
-//   return {
-//     props: {
-//       user,
-//       loggedIn: !!user,
-//     },
-//   };
 // };
 
 const ProfilePage = ({  }) => {
 
-  const { user, signOut, userLoading, loggedIn } = useAuth();
-  
-  // const { signOut } = useAuth();
-
+  // Client Side 보안
+  const { user, signOut,loading, userLoading, loggedIn } = useAuth();
   // 클라이언트 사이드에서 useEffect로 유저가 로그인됐는지 체크해서 아니면 바로 "/auth" 라우팅으로 보내버리게 됩니다.
   // 클라이언트 사이드에서의 useEffect 방식은 useEffect가 실행될 때까지 기존 UI가 아주 잠깐 보인다는 단점이 있습니다.
-  // useEffect(() => {
-  //   if (!userLoading && !loggedIn) {
-  //     Router.push("/auth");
-  //   }
-  // }, [userLoading, loggedIn]);
+  useEffect(() => {
+    if (!userLoading && !loggedIn) {
+      Router.push("/auth");
+    }
+  }, [userLoading, loggedIn]);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
+  // Server Side 보안
+  // const { signOut } = useAuth();
 
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
 
 const toParsingLocalDate : Function = (date: string) => {
   return new Date(date).toLocaleString();
