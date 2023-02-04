@@ -47,7 +47,7 @@ export const AuthProvider = (props : ContainerProps ) => {
         handleMessage?.( { message: error.message, type : "error"} );
       }else{
         handleMessage?.({
-          message : "Signup successful. Please check your inbox for a confirmation email!",
+          message : "인증 메일을 전송하였습니다. 해당 이메일 계정의 편지함을 확인해주세요.",
           type : "success"
         })
       }
