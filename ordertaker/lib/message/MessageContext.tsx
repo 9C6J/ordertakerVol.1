@@ -3,7 +3,7 @@ import { MessageProps } from "./message.types";
 
 export type MessageContextProps = {
     messages : MessageProps[];
-    handleMessage? : ( arg0: MessageProps ) => void ;
+    handleMessage : ( arg0: MessageProps ) => void ;
 };
 
 export const MessageContext = createContext<Partial<MessageContextProps>>( {} );

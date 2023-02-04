@@ -8,7 +8,7 @@ import Router from "next/router";
 
 
 export type AuthContextProps = {
-  user : User | any;
+  user : User;
   signUp : (payload: SupabaseAuthPayload) => void;
   signIn : (payload: SupabaseAuthPayload) => void;
   signOut : () => void | any;
@@ -31,7 +31,7 @@ export const AuthProvider = (props : ContainerProps ) => {
 
   const [loading, setLoading] = useState(false);
   
-  const [user, setUser] = useState<Partial<User>>({});
+  const [user, setUser] = useState<User>();
   // const [user, setUser] = useState<User>();
   const [userLoading, setUserLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -71,6 +71,7 @@ export const AuthProvider = (props : ContainerProps ) => {
       setLoading(true);
       const { error } = await supabase.auth.signInWithPassword(payload);
       if (error) {
+        debugger;
         console.log(error);
         handleMessage?.({ message: error.message, type: "error" });
       } else {
@@ -85,6 +86,7 @@ export const AuthProvider = (props : ContainerProps ) => {
         });
       }
     } catch (error : any) {
+      debugger;
       console.log(error);
       handleMessage?.({
         message: error.error_description || error,
@@ -102,6 +104,7 @@ export const AuthProvider = (props : ContainerProps ) => {
     // const user = supabase.auth.getSzession();
     // const { data : {session},} = supabase.auth.getSession();
     // const { data : {session}} =  supabase.auth.getUser();
+    
     const user =  supabase.auth.getUser().then((response)=>{
       console.log("====1",response)
       // setUser(response.data.user)
@@ -122,36 +125,33 @@ export const AuthProvider = (props : ContainerProps ) => {
     });
 
 
+    // 로그인한 유저의 액션에 따라서 페이지를 달리 보여줘야 하기 때문에 유저의 액션 상태를 항상 체크해야 하는 뭔가가 있어야 합니다.
     const { data : authListener} = supabase.auth.onAuthStateChange(
       async(event, session) => {
-        console.log("====authStateChange :",event)
-        const user = session?.user! ?? null;
-        console.log("====session :",session)
+        // event : 'SIGNED_IN' | 'SIGNED_OUT' | 'USER_UPDATED' | 'PASSWORD_RECOVERY'
+        debugger;
+        console.log("====authStateChange :",event);
 
+        const user = session?.user! ?? null;
+        console.log("====session :",session);
         setUserLoading(false);
         if (user) {
-
           setUser(user);
           setLoggedIn(true);
-          // Router.push("/profile");
+          Router.push("/profile");
         } else {
 
-          setUser({});
+          setUser(undefined);
           setLoading(false);
           setLoggedIn(false);
-          // Router.push("/auth");
-          // console.log("/auth")
-
+          Router.push("/auth");
         }
       }
     )
     
     return () => {
       authListener.subscription.unsubscribe();
-    }
-
-    // return { user, userLoading }
-
+    };
     
   },[]);
   
