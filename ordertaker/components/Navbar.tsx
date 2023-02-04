@@ -79,6 +79,9 @@ const Navbar = () => {
 
       {/* mobile menu items */}
       <div className={`${!menuToggle ? "hidden" : ""} md:hidden`}>
+        <a href="/gallery" className="block py-2 px-4 text-sm hover:bg-gray-200">
+          Gallery
+        </a>
         <a
           href="/profile"
           className="block py-2 px-4 text-sm hover:bg-gray-200"
