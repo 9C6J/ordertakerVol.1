@@ -96,21 +96,17 @@ export const AuthProvider = (props : ContainerProps ) => {
   const signOut = async() => await supabase.auth.signOut();
 
   useEffect(() => {
-    // const user = supabase.auth.user();
-    // const user = supabase.auth.getSzession();
-    // const { data : {session},} = supabase.auth.getSession();
-    // const { data : {session}} =  supabase.auth.getUser();
     
     const user =  supabase.auth.getUser().then((response)=>{
-      console.log("====1",response)
-      // setUser(response.data.user)
+      console.log("====useEffect :",event);
+      
       if (response.data.user) {
         setUser(response.data.user);
         setUserLoading(false);
         setLoggedIn(true);
-        // Router.push("/profile");
       }else{
         setUserLoading(false);
+        Router.push("/auth");
       }
     })
     .catch((err)=>{
@@ -146,13 +142,9 @@ export const AuthProvider = (props : ContainerProps ) => {
           document.cookie = `my-refresh-token=${session?.refresh_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
           setUser(user);
           setLoggedIn(true);
-          Router.push("/profile");
+          Router.push("/");
         }
 
-        // if (user) {
-        // } else {
-
-        // }
         return () => {
           authListener.subscription.unsubscribe();
         };
