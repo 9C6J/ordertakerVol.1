@@ -87,20 +87,20 @@ export default function Main( { images }: { images: Image[]} ) {
 
     <div className="flex flex-col items-center justify-start py-36 min-h-screen">
       <Head>
-        <title>Supabase Auth Tutorial</title>
+        <title>🍊</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <h1 className="text-6xl font-bold">
-        Welcome to 🍊{" "}
+         {/* 🍊{" "} */}
         <a className="text-blue-600" href="https://nextjs.org">
-          with Next.js
+          {/* test */}
         </a>
       </h1>
       <Image
           alt=""
           src={orange}
-          width={700}
+          width={500}
           objectFit="cover"
           className={cn(
             'duration-700 ease-in-out group-hover:opacity-75',

@@ -7,7 +7,6 @@ import classNames from "classnames";
 import { useFormFields } from "../lib/utils";
 import { useMessage } from "../lib/message";
 import { useAuth } from "../lib/auth";
- 
 
 type FormFieldProps = {
   email: string;
@@ -19,23 +18,19 @@ const FORM_VALUES: FormFieldProps = {
   password: "",
 };
 
-
 type SupabaseAuthPayload = FormFieldProps; // type alias
 
-
-// const MESSAGE_VALUES: MessageProps = {
-//   type: "default",
-//   payload: "",
-// };
-
 const Auth: React.FC = (props) => {
+  //로그인 기본정보
+  const [values, handleChange, resetFormFields] =
+    useFormFields<FormFieldProps>(FORM_VALUES);
+
+  // 로그인상태
   const [isSignIn, setIsSignIn] = useState(true);
+
   const { loading, signIn, signUp } = useAuth();
   const { messages, handleMessage } = useMessage();
 
-
-  const [values, handleChange, resetFormFields] =
-    useFormFields<FormFieldProps>(FORM_VALUES);
 
   // const [message, handleMessage] = useMessage<MessageProps>(MESSAGE_VALUES);
 
@@ -55,12 +50,13 @@ const Auth: React.FC = (props) => {
           <FaLock className="w-6 h-6" />
         )}
         <h1 className="text-2xl md:text-4xl text-gray-700 font-semibold">
-          {isSignIn ? "'Log' In" : "Sign Up"}
+          {isSignIn ? "로그인" : "회원가입"}
         </h1>
       </div>
       {messages &&
        messages.map((message, index) => (
         <div
+          key={index}
           className={classNames(
             "shadow-md rounded px-3 py-2 text-shadow transition-all mt-2 text-center",
             message.type === "error"
@@ -82,14 +78,14 @@ const Auth: React.FC = (props) => {
             className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="email"
           >
-            Email
+            이메일
           </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="email"
             name="email"
             type="email"
-            placeholder="Your Email"
+            placeholder="email"
             required
             value={values.email}
             onChange={handleChange}
@@ -100,14 +96,14 @@ const Auth: React.FC = (props) => {
             className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="password"
           >
-            Password
+            비밀번호
           </label>
           <input
             className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             id="password"
             name="password"
             type="password"
-            placeholder="Your password"
+            placeholder="password"
             required
             value={values.password}
             onChange={handleChange}
@@ -118,11 +114,11 @@ const Auth: React.FC = (props) => {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
           >
-            {isSignIn ? "Log In" : "Sign Up"}
+            {isSignIn ? "로그인" : "회원가입"}
           </button>
           <div className="flex-1 text-right">
             <small className="block text-gray-600">
-              {isSignIn ? "Not a member yet?" : "Already a member?"}{" "}
+              {isSignIn ? "계정이 없으신가요?" : "계정이 있으신가요?"}{" "}
             </small>
             <a
               className="block font-semibold"
@@ -132,7 +128,7 @@ const Auth: React.FC = (props) => {
                 setIsSignIn(!isSignIn);
               }}
             >
-              {isSignIn ? "Sign Up" : "Log In"}
+              {isSignIn ? "회원가입" : "로그인"}
             </a>
           </div>
         </div>

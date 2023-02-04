@@ -27,19 +27,13 @@ const Navbar = () => {
                 href="/gallery"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
-                Gallery
+                갤러리
               </a>
               <a
                 href="/profile"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
-                Profile
-              </a>
-              <a
-                href="#"
-                className="py-5 px-3 text-gray-700 hover:text-gray-900"
-              >
-                Pricing
+                마이페이지
               </a>
             </div>
           </div>
@@ -48,19 +42,19 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-1">
               ({user?.email})
               <button className="py-5 px-3" onClick={signOut}>
-                Log out
+                로그아웃
               </button>
             </div>
           ) : (
             <div className="hidden md:flex items-center space-x-1">
               <a href="/auth" className="py-5 px-3">
-                Login
+                로그인
               </a>
               <a
                 href="/auth"
                 className="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
               >
-                Signup
+                회원가입
               </a>
             </div>
           )}
@@ -80,16 +74,13 @@ const Navbar = () => {
       {/* mobile menu items */}
       <div className={`${!menuToggle ? "hidden" : ""} md:hidden`}>
         <a href="/gallery" className="block py-2 px-4 text-sm hover:bg-gray-200">
-          Gallery
+          갤러리
         </a>
         <a
           href="/profile"
           className="block py-2 px-4 text-sm hover:bg-gray-200"
         >
-          Profile
-        </a>
-        <a href="#" className="block py-2 px-4 text-sm hover:bg-gray-200">
-          Pricing
+          마이페이지
         </a>
 
         {loggedIn ? (
@@ -97,7 +88,7 @@ const Navbar = () => {
             className="block py-2 px-4 text-sm hover:bg-gray-200"
             onClick={signOut}
           >
-            Log out
+            로그아웃
           </button>
         ) : (
           <div>
@@ -105,13 +96,13 @@ const Navbar = () => {
               href="/auth"
               className="block py-2 px-4 text-sm hover:bg-gray-200"
             >
-              Login
+              로그인
             </a>
             <a
               href="/auth"
               className="block py-2 px-4 text-sm hover:bg-gray-200"
             >
-              Signup
+              회원가입
             </a>
           </div>
         )}

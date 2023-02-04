@@ -1,6 +1,6 @@
 import { createContext, FunctionComponent, useEffect, useState } from "react";
 import { supabase } from "../../pages/api/supabase";
-import { User } from "@supabase/supabase-js";
+import { AuthUser } from "@supabase/supabase-js";
 import { useMessage, MessageProps } from "../message";
 import { SupabaseAuthPayload } from "./auth.types";
 
@@ -8,7 +8,7 @@ import Router from "next/router";
 
 
 export type AuthContextProps = {
-  user : User;
+  user : AuthUser;
   signUp : (payload: SupabaseAuthPayload) => void;
   signIn : (payload: SupabaseAuthPayload) => void;
   signOut : () => void | any;
@@ -30,9 +30,7 @@ export const AuthContext = createContext<Partial<AuthContextProps>>({});
 export const AuthProvider = (props : ContainerProps ) => {
 
   const [loading, setLoading] = useState(false);
-  
-  const [user, setUser] = useState<User>();
-  // const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<AuthUser>();
   const [userLoading, setUserLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -69,25 +67,23 @@ export const AuthProvider = (props : ContainerProps ) => {
   const signIn = async (payload: SupabaseAuthPayload) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword(payload);
+      const { data, error } = await supabase.auth.signInWithPassword(payload);
       if (error) {
-        debugger;
-        console.log(error);
-        handleMessage?.({ message: error.message, type: "error" });
+        console.log("로그인에실패하였습니다 : ",error);
+        handleMessage?.({ message: "로그인에 실패하였습니다 비밀번호를 확인해주세요.", type: "error" });
       } else {
+        console.log("로그인성공 success : "+data?.user?.email+" error :"+error);
         handleMessage?.({
-          message: "Log in successful. I'll redirect you once I'm done",
+          message: "로그인에 성공하였습니다.",
           type: "success",
         });
-
         handleMessage?.({
-          message : `Welcom, ${user?.email}`,
+          message : `환영합니다. ${data?.user?.email}`,
           type : "success"
         });
       }
     } catch (error : any) {
-      debugger;
-      console.log(error);
+      console.log("catch error =>",error);
       handleMessage?.({
         message: error.error_description || error,
         type: "error",
@@ -129,29 +125,40 @@ export const AuthProvider = (props : ContainerProps ) => {
     const { data : authListener} = supabase.auth.onAuthStateChange(
       async(event, session) => {
         // event : 'SIGNED_IN' | 'SIGNED_OUT' | 'USER_UPDATED' | 'PASSWORD_RECOVERY'
-        debugger;
         console.log("====authStateChange :",event);
 
         const user = session?.user! ?? null;
         console.log("====session :",session);
         setUserLoading(false);
-        if (user) {
-          setUser(user);
-          setLoggedIn(true);
-          Router.push("/profile");
-        } else {
 
+        if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+          // delete cookies on sign out
+          const expires = new Date(0).toUTCString()
+          document.cookie = `my-access-token=; path=/; expires=${expires}; SameSite=Lax; secure`
+          document.cookie = `my-refresh-token=; path=/; expires=${expires}; SameSite=Lax; secure`
           setUser(undefined);
           setLoading(false);
           setLoggedIn(false);
           Router.push("/auth");
+        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          const maxAge = 100 * 365 * 24 * 60 * 60 // 100 years, never expires
+          document.cookie = `my-access-token=${session?.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
+          document.cookie = `my-refresh-token=${session?.refresh_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
+          setUser(user);
+          setLoggedIn(true);
+          Router.push("/profile");
         }
+
+        // if (user) {
+        // } else {
+
+        // }
+        return () => {
+          authListener.subscription.unsubscribe();
+        };
       }
     )
     
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
     
   },[]);
   
