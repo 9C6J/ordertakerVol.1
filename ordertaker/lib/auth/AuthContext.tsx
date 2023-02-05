@@ -2,19 +2,20 @@ import { createContext, FunctionComponent, useEffect, useState } from "react";
 import { supabase } from "../../pages/api/supabase";
 import { AuthUser, AuthChangeEvent,Session} from "@supabase/supabase-js";
 import { useMessage, MessageProps } from "../message";
-import { SupabaseAuthPayload } from "./auth.types";
+import { SupabaseAuthPayload, SupabaseChangePasswordPayload, SupabaseRecoveryPasswordPayload } from "./auth.types";
 
 import Router from "next/router";
 
-
 export type AuthContextProps = {
-  user : AuthUser;
-  signUp : (payload: SupabaseAuthPayload) => void;
-  signIn : (payload: SupabaseAuthPayload) => void;
-  signOut : () => void | any;
+  user : AuthUser; // 유저객체
+  signUp : (payload: SupabaseAuthPayload) => void; // 회원가입
+  signIn : (payload: SupabaseAuthPayload) => void; // 로그인
+  signOut : () => void | any; // 로그아웃
   loading : boolean;
-  loggedIn : boolean;
+  loggedIn : boolean; // 로그인여부
   userLoading : boolean;
+  updatePassword : (payload: SupabaseChangePasswordPayload) => void; // 비밀번호변경
+  recoveryPassword : (payload: SupabaseRecoveryPasswordPayload) => void; // 비밀번호복구
 };
 
 type ContainerProps = {
@@ -22,11 +23,7 @@ type ContainerProps = {
 };
 
 // Partial : {} 로 초기화가능
-// export const AuthContext = createContext<AuthContextProps | null>(null) 
 export const AuthContext = createContext<Partial<AuthContextProps>>({});
-// √const AuthContext = React.createContext<AuthContextProps | null>(nu;l)
-//  as React.Context<AuthContextProps>;
-
 export const AuthProvider = (props : ContainerProps ) => {
 
   const [loading, setLoading] = useState(false);
@@ -36,14 +33,15 @@ export const AuthProvider = (props : ContainerProps ) => {
 
   const { handleMessage } = useMessage();
 
-  // sign-up a user with provided details
+  // 회원가입
   const signUp = async (payload : SupabaseAuthPayload) => {
     try {
       setLoading(true);
       const { error } = await supabase.auth.signUp(payload);
-
+      
       if(error){
         console.log(error);
+        error.status === 422 ? handleMessage?.( { message: "비밀번호는 6자리 이상으로 지정해주세요.", type : "error"} ) :
         handleMessage?.( { message: error.message, type : "error"} );
       }else{
         handleMessage?.({
@@ -62,8 +60,8 @@ export const AuthProvider = (props : ContainerProps ) => {
     }
   };
 
-  // sign-in a user with provided details
-  // signIn -> signInWithPassword
+  // signIn -> signInWithPassword  supabase 버전업
+  // 로그인
   const signIn = async (payload: SupabaseAuthPayload) => {
     try {
       setLoading(true);
@@ -108,7 +106,60 @@ export const AuthProvider = (props : ContainerProps ) => {
   //   //   body: JSON.stringify({event, session})
   //   // })
   // }
+
+  //비밀번호변경
+  const updatePassword = async(payload: SupabaseChangePasswordPayload) => {
+    try {
+      setLoading(true);
+
+      const { data, error } = await supabase.auth.updateUser(payload);
+      // const { error, user } = await supabase.auth.update(payload);
+        if(error){
+          console.log(error);
+          handleMessage?.({message : error.message, type:"error"});
+        }else{
+          handleMessage?.({message: "비밀번호를 변경하였습니다. 재로그인 해주세요.", type:"success"});
+        }
+        
+    } catch (error: any) {
+      console.log(error);
+      handleMessage?.({
+        message: error.error_description || error,
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //비밀번호복구
+  const recoveryPassword = async(payload: SupabaseRecoveryPasswordPayload) => {
+    try {
+      debugger;
+      setLoading(true);
+      let { data, error } = await supabase.auth.resetPasswordForEmail(payload?.email);
+
+        if(error){
+          console.log(error);
+          handleMessage?.({message : error.message, type:"error"});
+        }else{
+          handleMessage?.({message: "해당 이메일로 비밀번호 복구 메일을 전송하였습니다.", type:"success"});
+        }
+        
+    } catch (error: any) {
+      console.log(error);
+      handleMessage?.({
+        message: error.error_description || error,
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // mount, unmount 시점에 실행됨
   useEffect(() => {
+    // mount
     const user =  supabase.auth.getUser().then((response)=>{
       console.log("====user :",response?.data?.user);
       
@@ -116,6 +167,7 @@ export const AuthProvider = (props : ContainerProps ) => {
         setUser(response.data.user);
         setUserLoading(false);
         setLoggedIn(true);
+        // Router.push("/");
       }else{
         setUserLoading(false);
         Router.push("/auth");
@@ -146,8 +198,8 @@ export const AuthProvider = (props : ContainerProps ) => {
         if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
           // delete cookies on sign out
           const expires = new Date(0).toUTCString()
-          document.cookie = `my-access-token=; path=/; expires=${expires}; SameSite=Lax; secure`
-          document.cookie = `my-refresh-token=; path=/; expires=${expires}; SameSite=Lax; secure`
+          // document.cookie = `my-access-token=; path=/; expires=${expires}; SameSite=Lax; secure`
+          // document.cookie = `my-refresh-token=; path=/; expires=${expires}; SameSite=Lax; secure`
           setUser(undefined);
           setLoading(false);
           setLoggedIn(false);
@@ -155,19 +207,26 @@ export const AuthProvider = (props : ContainerProps ) => {
 
         } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           const maxAge = 100 * 365 * 24 * 60 * 60 // 100 years, never expires
-          document.cookie = `my-access-token=${session?.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
-          document.cookie = `my-refresh-token=${session?.refresh_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
+          // document.cookie = `my-access-token=${session?.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
+          // document.cookie = `my-refresh-token=${session?.refresh_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`
           setUser(user);
           setLoggedIn(true);
           Router.push("/");
-
+        } else if (event == "PASSWORD_RECOVERY") {
+          const newPassword = prompt("6자리 이상의 변경할 비밀번호를 입력해주세요.") || undefined;
+          const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+   
+          if (data) alert("비밀번호 변경을 완료하였습니다.");
+          if (error) alert(error.message);
         }
-
+        
         return () => {
           authListener.subscription.unsubscribe();
         };
       }
     )
+
+
   },[]);
   
   return (
@@ -181,6 +240,8 @@ export const AuthProvider = (props : ContainerProps ) => {
         loading,
         loggedIn,
         userLoading,
+        updatePassword,
+        recoveryPassword
       }}
     >
       {props.children}
