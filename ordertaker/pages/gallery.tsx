@@ -4,6 +4,7 @@ import { supabase } from './api/supabase';
 import Image from 'next/image'
 import orange from "../public/orange.jpeg";
 import cat from "../public/cat.png";
+import { useRouter} from "next/router";
 // const showTestData = async () => {
 //   const { data, status, statusText } = await supabase.from('images').select('*');
 //   console.log("showTestData ====");
@@ -32,56 +33,14 @@ const IMAGE_VALUES: ImageProps = {
 
 
 export const getStaticProps = async () => {
-  // export const getServerSideProps = async () => {
-  // const { data , status, statusText } = await supabase.from('images').select('*');
-  const { data , status, statusText } = await supabase.from('images').select('*');
-  console.log("getServerSideProps ====");
-  // console.log(req);
+  const { data: images } = await supabase.from('images').select('*');
 
-  // console.log(data);
-  // console.log(status);
-  // console.log(statusText);
-
-  if (!data) {
-      return { 
-        props: {
-          images: [
-            {
-              id: 1,
-              created_at: "test",
-              name: "차",
-              href: "https://avatars.githubusercontent.com/u/105836469?s=200&v=4",
-              userName: "차",
-              imageSrc: "https://avatars.githubusercontent.com/u/105836469?s=200&v=4"
-            }
-          ]
-        }, 
-        // redirect: { 
-        //   destination: '/login',
-        //   permanent: false 
-        // } 
-      }
-  }else{
-    return { 
-      props: {
-        images: data,
-      }, 
+  return {
+    props: {
+      images
     }
-
-  }
-
+  };
 }
-// Static site rendering: SSG
-// export async function getStaticProps() {
-
-//   const { data } = await supabase.from('images').select('*').order('id');
-
-//   return {
-//     props: {
-//       images: data,
-//     },
-//   }
-// }
 
 function BlurImage({ image }: { image: Image }) {
   const [isLoading, setLoading] = useState(true)
@@ -89,12 +48,6 @@ function BlurImage({ image }: { image: Image }) {
   return (
     <a href={image.imageSrc} className="group">
       <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
-        
-        {/* <img
-          alt=""
-          src={image.imageSrc}
-        /> */}
-        
         <Image
           alt=""
           src={image.imageSrc}
@@ -136,7 +89,7 @@ type Image = {
   created_at: string;
   name: string;
   href: string;
-  userName: string;
+  userName: string; 
   imageSrc: string;
 };
 
@@ -149,41 +102,13 @@ function cn(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-
-
-const Gallery = ({images} : { images : Image[]}) => {
-
-  // const [aImages, setImages] = useState(data.images);
-
-  // Run the getTasks function when the component is mounted
-  // useEffect(() => {
-  // }, []);
-
-  // let image :Image[] = [{
-  //   id: 123,
-  //   created_at: "test",
-  //   name: "test",
-  //   href: "test",
-  //   userName: "test",
-  //   imageSrc: "test"
-  // }]
-    //   <div className="bg-slate-100 max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-      
-  //   <button className="bg-blue-100" onClick={showTestData}>
-  //     DB 테스트
-  //   </button><br/>
-
-
-  
-  // </div>
+// const Gallery = (props : Image|Image[]) => {
+function Gallery({images} : { images : Image[]}){
 
   return (
     <div className="container px-5 py-10 mx-auto w-2/3">
       <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-        {/* {data.images && data.images.map((image : Image) => (
-            <BlurImage key={image.id} image={image} />
-        ))} */}
-        {images && images.map((image : Image) => (
+        {images.map((image) => (
             <BlurImage key={image.id} image={image} />
         ))}
       </div>
@@ -240,7 +165,7 @@ function FileUpload(){
           imageSrc: sPath,
           userName: 'test'
         }]);
-        location.reload();
+        // location.reload();
         
         console.log('완료!');
       } catch (err) {
@@ -272,5 +197,4 @@ function FileUpload(){
     )
 
 }
-  
 export default Gallery;
