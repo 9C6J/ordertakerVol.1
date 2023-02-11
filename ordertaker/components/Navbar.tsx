@@ -23,11 +23,17 @@ const Navbar = () => {
 
             {/* primary nav */}
             <div className="hidden md:flex items-center space-x-1">
-              <a
+            <a
                 href="/gallery"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
                 갤러리
+              </a>
+              <a
+                href="/product"
+                className="py-5 px-3 text-gray-700 hover:text-gray-900"
+              >
+                상품등록
               </a>
               <a
                 href="/profile"
@@ -75,6 +81,9 @@ const Navbar = () => {
       <div className={`${!menuToggle ? "hidden" : ""} md:hidden`}>
         <a href="/gallery" className="block py-2 px-4 text-sm hover:bg-gray-200">
           갤러리
+        </a>
+        <a href="/product" className="block py-2 px-4 text-sm hover:bg-gray-200">
+          상품등록
         </a>
         <a
           href="/profile"

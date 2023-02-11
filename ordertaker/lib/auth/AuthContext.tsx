@@ -82,6 +82,8 @@ export const AuthProvider = (props : ContainerProps ) => {
 
         Router.push("/");
       }
+      Router.push("/");
+
     } catch (error : any) {
       console.log("catch error =>",error);
       handleMessage?.({
