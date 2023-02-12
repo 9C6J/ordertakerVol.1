@@ -1,23 +1,148 @@
-import React, { useState, useEffect} from "react";
+import React, {  useRef, useState, useEffect, ReactHTML} from "react";
 
 import { supabase } from './api/supabase';
 import Image from 'next/image'
-import { useRouter} from "next/router";
+import internal from "stream";
+import { InputType } from "zlib";
+import { useFormFields } from "../lib/utils";
+import Router from "next/router";
+
+const MAX_COUNT = 1;
+
+// 상품
+type Product = {
+  // id : String;// 상품번호 
+  title : string;// 상품제목 
+  price : number;// 상품가격 
+  imageSrc : string;// 상품이미지 
+  size : string;// 상품사이즈 
+  content : string;// 상품설명 
+
+};
+
+// 상품 초기화
+const PRODUCT_FORM_VALUES: Product = {
+  title : "",
+  price : 0,
+  imageSrc : "",
+  size : "",
+  content : "",
+};
 
 
 export default function Product(){
 
-// 상품번호 id
-// 상품제목 title
-// 상품가격 price
-// 상품이미지 imageSrc
-// 상품사이즈 size
-// 상품설명 content
+  const [values, handleChange, resetFormFields] = useFormFields<Product>(PRODUCT_FORM_VALUES);
+
+  const [uploadedFiles, setUploadedFiles] = useState<File|any|null>('');
+  const [imgFile, setImgFile] = useState<ArrayBuffer|String|null>('');
+  const [fileLimit, setFileLimit] = useState(false);
+
+  const firstFocusInput  = useRef<HTMLInputElement|any>(null);
+
+  const handleUploadFiles = (file:File[]) => {
+    // const uploaded = [...uploadedFiles];
+    const reader = new FileReader();
+    // const images = [...imgFile];
+
+    let limitExceeded = false;
+    // files.some((file) =>{
+    //   if(uploaded.findIndex((f)=> f.name === file.name) === -1 ){
+    //     // uploaded.push(file);
+    //     uploaded[0] = file;
+
+    //     reader.readAsDataURL(file);
+
+    //     // if(uploaded.length === MAX_COUNT ) setFileLimit(true);
+    //     // if(uploaded.length > MAX_COUNT){
+    //     //   alert(`업로드 가능한 최대 파일 갯수는 ${MAX_COUNT}개 입니다.`);
+    //     //   setFileLimit(false);
+    //     //   limitExceeded = true;
+    //     //   return true;
+    //     // }
+    //   }
+    // });
+
+    if(file?.length){
+      reader.readAsDataURL(file[0]);
+    }
+
+    // if(!limitExceeded){
+      setUploadedFiles(file[0])
+      reader.onloadend = () => {
+        // images.push(reader.result);
+        setImgFile(reader.result)
+        // console.log("e",images)
+      }
+    // };
+  }
+
+  const handleUpload = async(e:any) => {
+    let files:any;
+    
+    if (e.target.files) {
+      files = Array.prototype.slice.call(e.target.files);
+      handleUploadFiles(files);
+    }
+
+  }
+  
+  useEffect(()=>{
+    firstFocusInput.current.focus();
+  },[]);
+
+
+  const handleSumbit = async (event : any) => {
+    event.preventDefault();
+
+    const InsertValue = {...values};
+
+    try {
+      await supabase.from('product').insert(InsertValue);
+    
+      console.log('완료!');
+    } catch (err) {
+      console.error(err);
+    }
+
+    const {data,error} = await supabase.storage
+    .from('images')
+    .upload('public/'+ uploadedFiles?.name, uploadedFiles as File, {
+      upsert : true,
+      cacheControl : '0'
+    });
+
+    if(data){
+      console.log(data);
+      
+      try {
+        const sPath :string = "https://rnosdhxurhrwulmmbctu.supabase.co/storage/v1/object/public/images/"+data.path;
+
+        await supabase.from('images').insert([{
+          name: InsertValue.title,
+          href: sPath,
+          imageSrc: sPath,
+          userName: InsertValue.title
+        }]);
+        
+        console.log('완료!');
+      } catch (err) {
+        console.error(err);
+      }
+
+    }else if(error){
+      console.log(error);
+    }
+    // location.reload();
+    Router.push("/gallery");
+
+    // resetFormFields();
+  };
 
   return (
     <div>
       <form
-          // onSubmit={}
+          onSubmit={handleSumbit}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         >
             
@@ -35,6 +160,9 @@ export default function Product(){
               type="title"
               placeholder=""
               required
+              ref={firstFocusInput}
+              value={values.title}
+              onChange={handleChange}
             />
           </div>
             
@@ -52,6 +180,9 @@ export default function Product(){
               type="price"
               placeholder=""
               required
+              value={values.price}
+              onChange={handleChange}
+
             />
           </div>
             
@@ -64,16 +195,52 @@ export default function Product(){
             </label>
             
             <div className="flex items-center justify-center w-full">
-                <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                <label htmlFor="dropzone-file" 
+                  className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                  // className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                  >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                       
+                    {imgFile ? 
+                      <div className="">
+                        <Image
+                        alt=""
+                        src={imgFile?.toString()}
+                        priority={false}
+                        width={150}
+                        height={150}
+                        />
+                      </div>
+                      // imgFile.map(file => (
+                      // <div className="" key={file}>
+                      //   <Image
+                      //   alt=""
+                      //   src={file}
+                      //   priority={true}
+                      //   width={100}
+                      //   height={100}
+                      //   />
+                      // </div>
+                    : <div>
+                        <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                          </path>
+                        </svg>
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                     </div>
-                    <input id="dropzone-file" type="file" className="hidden" />
+                    }
+                       
+                    </div>
+                    <input id="dropzone-file" type="file" 
+                    // className="hidden" 
+                      onChange={(e)=> { handleUpload(e); }}
+                      // disabled={fileLimit}
+                      // multiple
+                    />
                 </label>
             </div> 
-
+            
           </div>
           
             
@@ -108,6 +275,8 @@ export default function Product(){
               id="content"
               name="content"
               placeholder=""
+              value={values.content}
+              onChange={handleChange}
               required
             />
           </div>
