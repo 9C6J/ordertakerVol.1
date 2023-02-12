@@ -17,7 +17,7 @@ export type AuthContextProps = {
   updatePassword : (payload: SupabaseChangePasswordPayload) => void; // 비밀번호변경
   recoveryPassword : (payload: SupabaseRecoveryPasswordPayload) => void; // 비밀번호복구
 };
-
+/storage/v1/object/public/images/public/chajae1.png
 type ContainerProps = {
   children: React.ReactNode; //👈 children prop typr
 };
@@ -164,7 +164,7 @@ export const AuthProvider = (props : ContainerProps ) => {
   useEffect(() => {
     // mount
     const user =  supabase.auth.getUser().then((response)=>{
-      console.log("====user :",response?.data?.user);
+      // console.log("====user :",response?.data?.user);
       
       if (response.data.user) {
         setUser(response.data.user);
@@ -173,7 +173,7 @@ export const AuthProvider = (props : ContainerProps ) => {
         // Router.push("/");
       }else{
         setUserLoading(false);
-        Router.push("/auth");
+        // Router.push("/auth");
       }
     })
     .catch((err)=>{
@@ -202,7 +202,7 @@ export const AuthProvider = (props : ContainerProps ) => {
           setUser(undefined);
           setLoading(false);
           setLoggedIn(false);
-          Router.push("/auth");
+          // Router.push("/auth");
         } else if (event === 'SIGNED_IN' 
         // || event === 'TOKEN_REFRESHED'
         ) {
