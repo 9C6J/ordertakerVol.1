@@ -17,7 +17,6 @@ export type AuthContextProps = {
   updatePassword : (payload: SupabaseChangePasswordPayload) => void; // 비밀번호변경
   recoveryPassword : (payload: SupabaseRecoveryPasswordPayload) => void; // 비밀번호복구
 };
-/storage/v1/object/public/images/public/chajae1.png
 type ContainerProps = {
   children: React.ReactNode; //👈 children prop typr
 };
