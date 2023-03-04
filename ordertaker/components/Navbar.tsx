@@ -30,6 +30,12 @@ const Navbar = () => {
                 갤러리
               </a>
               <a
+                href="/productList"
+                className="py-5 px-3 text-gray-700 hover:text-gray-900"
+              >
+                상품목록
+              </a>
+              <a
                 href="/product"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
@@ -81,6 +87,9 @@ const Navbar = () => {
       <div className={`${!menuToggle ? "hidden" : ""} md:hidden`}>
         <a href="/gallery" className="block py-2 px-4 text-sm hover:bg-gray-200">
           갤러리
+        </a>
+        <a href="/productList" className="block py-2 px-4 text-sm hover:bg-gray-200">
+          상품목록
         </a>
         <a href="/product" className="block py-2 px-4 text-sm hover:bg-gray-200">
           상품등록

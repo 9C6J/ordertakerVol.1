@@ -83,6 +83,7 @@ export default function Product(){
     if (e.target.files) {
       files = Array.prototype.slice.call(e.target.files);
       handleUploadFiles(files);
+      handleChange(e);
     }
 
   }
@@ -92,51 +93,51 @@ export default function Product(){
   },[]);
 
 
+  // 상품등록
   const handleSumbit = async (event : any) => {
     event.preventDefault();
 
     const InsertValue = {...values};
 
+    // 파일서버 이미지 업로드
     try {
-      await supabase.from('product').insert(InsertValue);
-    
-      console.log('완료!');
-    } catch (err) {
-      console.error(err);
-    }
+      const {data,error} = await supabase.storage
+      .from('images')
+      .upload('public/'+ uploadedFiles?.name, uploadedFiles as File, {
+        upsert : true,
+        cacheControl : '0'
+      });
 
-    const {data,error} = await supabase.storage
-    .from('images')
-    .upload('public/'+ uploadedFiles?.name, uploadedFiles as File, {
-      upsert : true,
-      cacheControl : '0'
-    });
+      // 파일서버 업로드 성공
+      if(data){
+        try {
+          const sPath :string = "https://rnosdhxurhrwulmmbctu.supabase.co/storage/v1/object/public/images/"+data.path;
+  
+          // 파일서버 url 추가
+          InsertValue.imageSrc = sPath;
+          
+          // 상품등록
+          await supabase.from('product').insert(InsertValue);
+          console.log('product insert 완료');
+          
+        } catch (err) {
+          console.error(err);
+        }
+        Router.push("/productList");
 
-    if(data){
-      console.log(data);
-      
-      try {
-        const sPath :string = "https://rnosdhxurhrwulmmbctu.supabase.co/storage/v1/object/public/images/"+data.path;
-
-        await supabase.from('images').insert([{
-          name: InsertValue.title,
-          href: sPath,
-          imageSrc: sPath,
-          userName: InsertValue.title
-        }]);
-        
-        console.log('완료!');
-      } catch (err) {
-        console.error(err);
+  
+      }else if(error){
+        console.log(error);
+        return;
       }
+      // location.reload();
+      // resetFormFields();
 
-    }else if(error){
-      console.log(error);
+    } catch (error) {
+      console.error(error);
+      return;
     }
-    // location.reload();
-    Router.push("/gallery");
 
-    // resetFormFields();
   };
 
   return (
@@ -151,7 +152,7 @@ export default function Product(){
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="password"
             > 
-              상품제목
+              상품명
             </label>
             <input
               className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -234,6 +235,8 @@ export default function Product(){
                     </div>
                     <input id="dropzone-file" type="file" 
                     // className="hidden" 
+                      name="imageSrc"
+                      // value={values.imageSrc}
                       onChange={(e)=> { handleUpload(e); }}
                       // disabled={fileLimit}
                       // multiple
