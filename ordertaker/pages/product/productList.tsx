@@ -1,10 +1,8 @@
 import React, { useState, useEffect} from "react";
 
-import { supabase } from './api/supabase';
+import { supabase } from '../api/supabase';
 import Image from 'next/image'
-import orange from "../public/orange.jpeg";
-import cat from "../public/cat.png";
-import { useRouter} from "next/router";
+import Link from 'next/link'
 
 // type ImageProps = {
 //   data: string;
@@ -18,7 +16,9 @@ import { useRouter} from "next/router";
 //   statusText : "",
 // };
 
-export const getStaticProps = async () => {
+// 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
+// 남용시 서버에 부담을 줄 수 있다.
+export const getServerSideProps = async () => {
   const { data: products } = await supabase.from('product').select('*');
 
   return {
@@ -31,22 +31,25 @@ export const getStaticProps = async () => {
 function BlurImage({image} : {image : Product}) {
   const [isLoading, setLoading] = useState(true)
   return (
-    <a href={image.imageSrc} className="group">
-      <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
-        <Image
-            alt=""
-            src={image.imageSrc}
-            priority={true}
-            width={500}
-            height={500}
-            className={cn(
-              'duration-700 ease-in-out group-hover:opacity-75',
-              isLoading
-                ? 'scale-110 blur-2xl grayscale'
-                : 'scale-100 blur-0 grayscale-0'
-            )}
-            onLoadingComplete={() => setLoading(false)}
-          />
+    <a href={`/product/${image.id}`} >
+      <div className="group aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
+        
+          {/* <Link href={`/product/${image.id}`}> */}
+            <Image
+              alt=""
+              src={image.imageSrc}
+              priority={true}
+              width={500}
+              height={500}
+              className={cn(
+                'duration-700 ease-in-out group-hover:opacity-80',
+                isLoading
+                  ? 'scale-110 blur-2xl grayscale'
+                  : 'scale-100 blur-0 grayscale-0'
+              )}
+              onLoadingComplete={() => setLoading(false)}
+            />
+          {/* </Link> */}
       </div>
       <h3 className="mt-4 text-sm text-gray-700">{image.title}</h3>
       <p className="mt-1 text-lg font-medium text-gray-900">{image.price}</p>

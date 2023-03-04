@@ -1,10 +1,10 @@
 import React, {  useRef, useState, useEffect, ReactHTML} from "react";
 
-import { supabase } from './api/supabase';
+import { supabase } from '../api/supabase';
 import Image from 'next/image'
 import internal from "stream";
 import { InputType } from "zlib";
-import { useFormFields } from "../lib/utils";
+import { useFormFields } from "../../lib/utils";
 import Router from "next/router";
 
 const MAX_COUNT = 1;
@@ -30,7 +30,7 @@ const PRODUCT_FORM_VALUES: Product = {
 };
 
 
-export default function Product(){
+export default function CreateProduct(){
 
   const [values, handleChange, resetFormFields] = useFormFields<Product>(PRODUCT_FORM_VALUES);
 
@@ -123,7 +123,7 @@ export default function Product(){
         } catch (err) {
           console.error(err);
         }
-        Router.push("/productList");
+        Router.push("/product/productList");
 
   
       }else if(error){

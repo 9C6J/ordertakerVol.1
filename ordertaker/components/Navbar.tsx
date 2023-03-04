@@ -30,13 +30,13 @@ const Navbar = () => {
                 갤러리
               </a>
               <a
-                href="/productList"
+                href="/product/productList"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
                 상품목록
               </a>
               <a
-                href="/product"
+                href="/product/CreateProduct"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
                 상품등록
