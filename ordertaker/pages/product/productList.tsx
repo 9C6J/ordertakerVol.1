@@ -53,8 +53,8 @@ function BlurImage({image} : {image : Product}) {
             />
           {/* </Link> */}
       </div>
-      <h3 className="mt-4 text-sm text-gray-700">{image.title}</h3>
-      <p className="mt-1 text-lg font-medium text-gray-900">{image.price}</p>
+      <p className="mt-1 text-lg font-medium text-gray-900 text-right">{image.title}</p>
+      <h3 className="mt-4 text-sm text-gray-700 text-right">{(image.price).toLocaleString()} 원</h3>
     </a>
   )
 };

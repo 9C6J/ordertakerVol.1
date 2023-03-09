@@ -45,106 +45,67 @@ const DetailProduct = ({product} : {product : Product}) => {
   const [isLoading, setLoading] = useState(true)
   
   return (
-    
-      <div>
-
-      <form
-          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-        >
+      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
+        <div className="mb-6">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+          > 
+            상품명
+          </label>
+          {product.title}
+        </div>
             
-          <div className="mb-6">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            > 
-              상품명
-            </label>
-            <input
-              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="title"
-              name="title"
-              type="title"
-              placeholder=""
-              required
-              value={product.title}
-              readOnly
-            />
-          </div>
+        <div className="mb-6">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+          > 
+            상품가격
+          </label>
+          {/* ko-KR */}
+          {(product.price).toLocaleString()} 원
+        </div>
             
-          <div className="mb-6">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            > 
-              상품가격
-            </label>
-            <input
-              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="price"
-              name="price"
-              type="price"
-              placeholder=""
-              required
-              value={product.price}
-              readOnly
-
-            />
-          </div>
-            
-          <div className="mb-6">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            > 
-              상품이미지
-            </label>
-            <Image
-              alt=""
-              src={product.imageSrc}
-              priority={true}
-              width={500}
-              height={500}
-              className={cn(
-                'duration-700 ease-in-out group-hover:opacity-80 mx-auto',
-                isLoading
-                  ? 'scale-110 blur-2xl grayscale'
-                  : 'scale-100 blur-0 grayscale-0'
-              )}
-              onLoadingComplete={() => setLoading(false)}
-            />
-          </div>
+        <div className="mb-6">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+          > 
+            상품이미지
+          </label>
+          <Image
+            alt=""
+            src={product.imageSrc}
+            priority={true}
+            width={500}
+            height={500}
+            className={cn(
+              'duration-700 ease-in-out group-hover:opacity-80 mx-auto',
+              isLoading
+                ? 'scale-110 blur-2xl grayscale'
+                : 'scale-100 blur-0 grayscale-0'
+            )}
+            onLoadingComplete={() => setLoading(false)}
+          />
+        </div>
           
-            
-          <div className="mb-6">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            > 
-              상품설명
-            </label>
-            <textarea
-              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              cols={40}
-              rows={8}
-              id="content"
-              name="content"
-              placeholder=""
-              value={product.content}
-              readOnly
-              required
-            />
-          </div>
+        <div className="mb-6">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="password"
+          > 
+            상품설명
+          </label>
+          {product.content}
+        </div>
           
-          <div className="flex gap-2">
-            <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="submit"
-            >
-              상품등록
-            </button>
-          </div>
-        </form>
-    </div>
+        <div className="flex gap-2">
+          <button
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            주문하기
+          </button>
+        </div>
+      </form>
   )
 }
 

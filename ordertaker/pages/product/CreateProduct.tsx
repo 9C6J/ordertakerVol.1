@@ -183,7 +183,6 @@ export default function CreateProduct(){
               required
               value={values.price}
               onChange={handleChange}
-
             />
           </div>
             
@@ -234,7 +233,7 @@ export default function CreateProduct(){
                        
                     </div>
                     <input id="dropzone-file" type="file" 
-                    // className="hidden" 
+                    className="hidden" 
                       name="imageSrc"
                       // value={values.imageSrc}
                       onChange={(e)=> { handleUpload(e); }}
