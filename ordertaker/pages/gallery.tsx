@@ -5,6 +5,9 @@ import Image from 'next/image'
 import orange from "../public/orange.jpeg";
 import cat from "../public/cat.png";
 import { useRouter} from "next/router";
+
+import { cn } from "../lib/utils";
+
 // const showTestData = async () => {
 //   const { data, status, statusText } = await supabase.from('images').select('*');
 //   console.log("showTestData ====");
@@ -92,15 +95,6 @@ type Image = {
   userName: string; 
   imageSrc: string;
 };
-
-
-/**
- * 배열 안에 존재할 수 있는 falsy한 값들을 제거하여 배열을 믿을 수 있는 상태로 만들기 위해 사용
- * 참고: https://velog.io/@yongbum/filter-boolean
-*/
-function cn(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
 
 // const Gallery = (props : Image|Image[]) => {
 function Gallery({images} : { images : Image[]}){

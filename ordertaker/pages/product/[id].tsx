@@ -5,6 +5,9 @@ import Image from 'next/image';
 import { supabase } from '../api/supabase';
 import React, { useState, useEffect} from "react";
 
+import { cn } from "../../lib/utils";
+
+
 // 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
 // 남용시 서버에 부담을 줄 수 있다.
 export const getServerSideProps = async (router: { query: { id: string; }; }) => {
@@ -28,15 +31,6 @@ export const getServerSideProps = async (router: { query: { id: string; }; }) =>
   }
   
 }
-
-
-/**
- * 배열 안에 존재할 수 있는 falsy한 값들을 제거하여 배열을 믿을 수 있는 상태로 만들기 위해 사용
- * 참고: https://velog.io/@yongbum/filter-boolean
-*/
-function cn(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-};
 
 type Product = {
   id: number;

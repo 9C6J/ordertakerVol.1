@@ -4,6 +4,8 @@ import { supabase } from '../api/supabase';
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { cn } from "../../lib/utils";
+
 // type ImageProps = {
 //   data: string;
 //   status: string;
@@ -56,16 +58,6 @@ function BlurImage({image} : {image : Product}) {
     </a>
   )
 };
-
-
-/**
- * 배열 안에 존재할 수 있는 falsy한 값들을 제거하여 배열을 믿을 수 있는 상태로 만들기 위해 사용
- * 참고: https://velog.io/@yongbum/filter-boolean
-*/
-function cn(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-};
-
 
 type Product = {
   id: number;
