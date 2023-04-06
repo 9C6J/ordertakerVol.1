@@ -6,9 +6,14 @@ export function useFormFields<T>(
     const [values, setValues] = useState<T>(initialValues);
     const handleChange = (event: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
         event.persist();
-        const { target } = event;
-        const { name, value } = target;
-        setValues({ ...values, [name]: value });
+        const { target  } = event;
+        let { name, value } = target;
+
+        // if(target?.type  === "number"){
+        //     setValues({ ...values, [name]: Number(value) });
+        // }else{
+            setValues({ ...values, [name]: value });
+        // }
     }
     const resetFormFields = () => setValues(initialValues);
     return [values, handleChange, resetFormFields];

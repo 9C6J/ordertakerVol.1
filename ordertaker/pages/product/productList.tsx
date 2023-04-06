@@ -33,11 +33,11 @@ export const getServerSideProps = async () => {
 function BlurImage({image} : {image : Product}) {
   const [isLoading, setLoading] = useState(true)
   return (
-    <a href={`/product/${image.id}`} >
+    image.imageSrc? <a href={`/product/${image.id}`} >
       <div className="group aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
         
           {/* <Link href={`/product/${image.id}`}> */}
-            <Image
+          <Image
               alt=""
               src={image.imageSrc}
               priority={true}
@@ -55,7 +55,13 @@ function BlurImage({image} : {image : Product}) {
       </div>
       <p className="mt-1 text-lg font-medium text-gray-900 text-right">{image.title}</p>
       <h3 className="mt-4 text-sm text-gray-700 text-right">{(image.price).toLocaleString()} 원</h3>
-    </a>
+    </a> :
+     <a href={`/product/${image.id}`} >
+     <div className="group aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
+     </div>
+     <p className="mt-1 text-lg font-medium text-gray-900 text-right">{image.title}</p>
+     <h3 className="mt-4 text-sm text-gray-700 text-right">{(image.price).toLocaleString()} 원</h3>
+   </a>
   )
 };
 

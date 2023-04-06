@@ -14,8 +14,8 @@ type Product = {
   // id : String;// 상품번호 
   title : string;// 상품제목 
   price : number;// 상품가격 
-  imageSrc : string;// 상품이미지 
-  size : string;// 상품사이즈 
+  imageSrc : string | null;// 상품이미지 
+  size : number | null;// 상품사이즈 
   content : string;// 상품설명 
 
 };
@@ -24,8 +24,8 @@ type Product = {
 const PRODUCT_FORM_VALUES: Product = {
   title : "",
   price : 0,
-  imageSrc : "",
-  size : "",
+  imageSrc : null,
+  size : null,
   content : "",
 };
 
@@ -99,8 +99,11 @@ export default function CreateProduct(){
 
     const InsertValue = {...values};
 
-    // 파일서버 이미지 업로드
-    try {
+    if(!uploadedFiles?.name){
+      confirm(`이미지 없이 등록할까요? 상품관리메뉴에서 등록 가능합니다.`);      
+    }else{
+      
+      // 파일서버 이미지 업로드
       const {data,error} = await supabase.storage
       .from('images')
       .upload('public/'+ uploadedFiles?.name, uploadedFiles as File, {
@@ -108,35 +111,22 @@ export default function CreateProduct(){
         cacheControl : '0'
       });
 
-      // 파일서버 업로드 성공
-      if(data){
-        try {
-          const sPath :string = "https://rnosdhxurhrwulmmbctu.supabase.co/storage/v1/object/public/images/"+data.path;
-  
-          // 파일서버 url 추가
-          InsertValue.imageSrc = sPath;
-          
-          // 상품등록
-          await supabase.from('product').insert(InsertValue);
-          console.log('product insert 완료');
-          
-        } catch (err) {
-          console.error(err);
-        }
-        Router.push("/product/productList");
-
-  
-      }else if(error){
-        console.log(error);
+      if(error){
+        console.error(error);
         return;
       }
-      // location.reload();
-      // resetFormFields();
-
-    } catch (error) {
-      console.error(error);
-      return;
+      InsertValue.imageSrc = "https://rnosdhxurhrwulmmbctu.supabase.co/storage/v1/object/public/images/"+data.path;
     }
+      // 상품등록
+      const {error} = await supabase.from('product').insert(InsertValue);
+
+      if(error){
+        console.log(error)
+      }else{
+        Router.push("/product/productList");
+      }
+    // location.reload();
+    // resetFormFields();
 
   };
 
@@ -158,7 +148,7 @@ export default function CreateProduct(){
               className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="title"
               name="title"
-              type="title"
+              type="text"
               placeholder=""
               required
               ref={firstFocusInput}
@@ -178,7 +168,7 @@ export default function CreateProduct(){
               className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="price"
               name="price"
-              type="price"
+              type="number"
               placeholder=""
               required
               value={values.price}
