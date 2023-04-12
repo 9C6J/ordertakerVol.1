@@ -69,9 +69,17 @@ const handleSumbit = async (event : any) => {
 
 };
 
+
 const DetailProduct = ({product} : {product : Product}) => {
   const [isLoading, setLoading] = useState(true)
+  const [iSum, setCount] = useState(product.price);
   
+  const handleCount = (e: any) => {
+    let iCount = e.target.value;
+    let iSum = e.target.value * product.price;
+    setCount(iSum);
+  }
+
   return (
       <form 
         onSubmit={handleSumbit} 
@@ -95,27 +103,32 @@ const DetailProduct = ({product} : {product : Product}) => {
           {(product.price).toLocaleString()} 원
         </div>
             
-        <div className="mb-6">
+        <div className="mb-6 w-1/4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
           > 
             상품이미지
           </label>
-          <Image
-            alt=""
-            src={product.imageSrc}
-            priority={true}
-            width={500}
-            height={500}
-            className={cn(
-              'duration-700 ease-in-out group-hover:opacity-80 mx-auto',
-              isLoading
-                ? 'scale-110 blur-2xl grayscale'
-                : 'scale-100 blur-0 grayscale-0'
-            )}
-            onLoadingComplete={() => setLoading(false)}
-          />
-        </div>
+          {product.imageSrc ? 
+                <Image
+                    alt=""
+                    src={product.imageSrc}
+                    priority={true}
+                    width={500}
+                    height={500}
+                    className={cn(
+                      'duration-700 ease-in-out group-hover:opacity-80',
+                      isLoading
+                        ? 'scale-110 blur-2xl grayscale'
+                        : 'scale-100 blur-0 grayscale-0'
+                    )}
+                    onLoadingComplete={() => setLoading(false)}
+                  />
+          : 
+          <div className="overflow-hidden rounded-lg bg-gray-200 h-40 flex justify-center items-center" >
+            <p className="text-gray-500">이미지없음</p>
+          </div>} 
+        </div> 
           
         <div className="mb-6">
           <label
@@ -125,6 +138,29 @@ const DetailProduct = ({product} : {product : Product}) => {
             상품설명
           </label>
           {product.content}
+        </div>
+
+        <div className="mb-6">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="password"
+          > 
+            주문수량
+          </label>
+          <input 
+            type="number"
+            onChange={(e)=> { handleCount(e); }}
+          />
+        </div>
+
+        <div className="mb-6">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="password"
+          > 
+            주문총금액
+          </label>
+          {iSum}
         </div>
           
         <div className="flex gap-2">
