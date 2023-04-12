@@ -43,31 +43,31 @@ type Product = {
 
 
 // 주문
-const handleSumbit = async (event : any) => {
-  event.preventDefault();
+// const handleSumbit = async (event : any) => {
+//   event.preventDefault();
 
-  const InsertValue = {...values};
+//   const InsertValue = {...values};
 
-  // 파일서버 업로드 성공
-  try {
-    // 상품등록
-    const {data, error} = await supabase.from('product').insert(InsertValue);
+//   // 파일서버 업로드 성공
+//   try {
+//     // 상품등록
+//     const {data, error} = await supabase.from('product').insert(InsertValue);
     
-    if(error){
-      throw new Error(error.message);
-    }
+//     if(error){
+//       throw new Error(error.message);
+//     }
 
-    console.log(data);
-  } catch (e) {
-    console.error(e);
-    // 에러처리
-  }
-  // Router.push("/product/productList");
+//     console.log(data);
+//   } catch (e) {
+//     console.error(e);
+//     // 에러처리
+//   }
+//   // Router.push("/product/productList");
 
-  // location.reload();
-  // resetFormFields();
+//   // location.reload();
+//   // resetFormFields();
 
-};
+// };
 
 
 const DetailProduct = ({product} : {product : Product}) => {
@@ -82,7 +82,7 @@ const DetailProduct = ({product} : {product : Product}) => {
 
   return (
       <form 
-        onSubmit={handleSumbit} 
+        // onSubmit={handleSumbit} 
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
         <div className="mb-6">
           <label
