@@ -4,6 +4,7 @@ import { Router } from 'next/router';
 import Image from 'next/image';
 import { supabase } from '../api/supabase';
 import React, { useState, useEffect} from "react";
+import { useFormFields } from "../../lib/utils";
 
 import { cn } from "../../lib/utils";
 
@@ -32,6 +33,10 @@ export const getServerSideProps = async (router: { query: { id: string; }; }) =>
   
 }
 
+
+
+
+
 type Product = {
   id: number;
   created_at: string;
@@ -39,50 +44,61 @@ type Product = {
   imageSrc : string;
   price : number;
   content : string;
+  quantity : number;
 };
 
 
-// 주문
-// const handleSumbit = async (event : any) => {
-//   event.preventDefault();
-
-//   const InsertValue = {...values};
-
-//   // 파일서버 업로드 성공
-//   try {
-//     // 상품등록
-//     const {data, error} = await supabase.from('product').insert(InsertValue);
-    
-//     if(error){
-//       throw new Error(error.message);
-//     }
-
-//     console.log(data);
-//   } catch (e) {
-//     console.error(e);
-//     // 에러처리
-//   }
-//   // Router.push("/product/productList");
-
-//   // location.reload();
-//   // resetFormFields();
-
-// };
-
 
 const DetailProduct = ({product} : {product : Product}) => {
+  // const [values, handleChange] = useFormFields<Product>(product);
+
   const [isLoading, setLoading] = useState(true)
   const [iSum, setCount] = useState(product.price);
+  const [quantity, setQuantity] = useState(1);
   
-  const handleCount = (e: any) => {
-    let iCount = e.target.value;
-    let iSum = e.target.value * product.price;
+  const handleCount = (e:React.ChangeEvent<HTMLInputElement>) => {
+    let iQuantity = parseInt(e.target.value);
+    let iSum =iQuantity * product.price;
+
+    setQuantity(iQuantity);
     setCount(iSum);
   }
 
+  // 주문
+const handleSumbit = async (e:React.ChangeEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  // const InsertValue = {...values};
+
+  // 파일서버 업로드 성공
+  // try {
+    // 상품등록
+
+    // total_price
+    // address
+    // payment_method
+
+    // const {data, error} = await supabase.from('order').insert(product);
+    // const {data, error} = await supabase.from('orderDetail').insert(product);
+    
+    // if(error){
+    //   throw new Error(error.message);
+    // }
+
+  //   console.log(data);
+  // } catch (e) {
+  //   console.error(e);
+  //   // 에러처리
+  // }
+  // Router.push("/product/productList");
+
+  // location.reload();
+  // resetFormFields();
+
+};
+
   return (
       <form 
-        // onSubmit={handleSumbit} 
+        onSubmit={handleSumbit} 
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
         <div className="mb-6">
           <label
@@ -149,6 +165,7 @@ const DetailProduct = ({product} : {product : Product}) => {
           </label>
           <input 
             type="number"
+            value={quantity}
             onChange={(e)=> { handleCount(e); }}
           />
         </div>
@@ -160,9 +177,17 @@ const DetailProduct = ({product} : {product : Product}) => {
           > 
             주문총금액
           </label>
-          {iSum}
+          {iSum.toLocaleString()}원
         </div>
           
+        <div className="flex gap-2">
+          <button
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            장바구니담기
+          </button>
+        </div>
         <div className="flex gap-2">
           <button
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
