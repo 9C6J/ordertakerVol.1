@@ -4,10 +4,6 @@ import { Router } from 'next/router';
 import Image from 'next/image';
 import { supabase } from '../api/supabase';
 import React, { useState, useEffect} from "react";
-import { useFormFields } from "../../lib/utils";
-
-import { cn } from "../../lib/utils";
-
 
 // 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
 // 남용시 서버에 부담을 줄 수 있다.
@@ -45,39 +41,7 @@ type Product = {
 
 
 const DetailProduct = ({product} : {product : Product}) => {
-  // const [values, handleChange] = useFormFields<Product>(product);
-  // const [type, setType] = useState<'order'|'cart'| string>();
-  
-  const [isLoading, setLoading] = useState(true);
-  const [iSum, setCount] = useState(product.price);
-  const [quantity, setQuantity] = useState(1);
-  
-  const handleCount = (e:React.ChangeEvent<HTMLInputElement>) => {
-    let iQuantity = parseInt(e.target.value);
-    let iSum =iQuantity * product.price;
-
-    setQuantity(iQuantity);
-    setCount(iSum);
-  }
-
-  const handleAddCart = ()=>{
-    alert("장바구니");
-  }
-
-
-  type Order = {
-    customer_id: string;
-    total_price: number;
-    address : string;
-    payment_method : string;
-  };
-
-  // 주문
-  const onSumbit  = async (event:React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-
-  // const buttonValue = (event.target as HTMLButtonElement).activeElement?.getAttribute('value');
-  alert("주문");
+  const [isLoading, setLoading] = useState(true)
   
   const InsertOrderValue = {...product};
   const InsertOrderDetailValue = {...product};
@@ -101,45 +65,30 @@ const DetailProduct = ({product} : {product : Product}) => {
   // ) tablespace pg_default;
   debugger;
     
-  // 파일서버 업로드 성공
-  // try {
-    // 상품등록
+      <div>
 
-    // total_price
-    // address
-    // payment_method
-
-    const {data, error} = await supabase.from('order').insert(product);
-    // const {data, error} = await supabase.from('orderDetail').insert(product);
-    
-    // if(error){
-    //   throw new Error(error.message);
-    // }
-
-  //   console.log(data);
-  // } catch (e) {
-  //   console.error(e);
-  //   // 에러처리
-  // }
-  // Router.push("/product/productList");
-
-  // location.reload();
-  // resetFormFields();
-
-};
-
-  return (
-      <form 
-        onSubmit={onSumbit } 
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
-        <div className="mb-6">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-          > 
-            상품명
-          </label>
-          {product.title}
-        </div>
+      <form
+          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+        >
+            
+          <div className="mb-6">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="password"
+            > 
+              상품명
+            </label>
+            <input
+              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              id="title"
+              name="title"
+              type="title"
+              placeholder=""
+              required
+              value={product.title}
+              readOnly
+            />
+          </div>
             
         <div className="mb-6">
           <label
@@ -212,24 +161,16 @@ const DetailProduct = ({product} : {product : Product}) => {
           {iSum.toLocaleString()}원
         </div>
           
-        <div className="flex gap-2">
-          <button
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
-            onClick={handleAddCart}
-          >
-            장바구니담기
-          </button>
-        </div>
-        <div className="flex gap-2">
-          <button
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
-            주문하기
-          </button>
-        </div>
-      </form>
+          <div className="flex gap-2">
+            <button
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              상품등록
+            </button>
+          </div>
+        </form>
+    </div>
   )
 }
 
