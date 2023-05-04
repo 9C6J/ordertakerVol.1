@@ -164,7 +164,7 @@ const ProfilePage = ({  }) => {
       )}
       {/* 메시지가 있을때 */}
       {messages && 
-        messages.map((message, index) => (
+        messages?.map((message, index) => (
           <div
             className={classNames(
               "shadow-md rounded px-3 py-2 text-shadow transition-all mt-2 text-center",

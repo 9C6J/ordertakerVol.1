@@ -148,11 +148,7 @@ export default function CreateProduct(){
               className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="title"
               name="title"
-<<<<<<< Updated upstream
-              type="text"
-=======
               type="string"
->>>>>>> Stashed changes
               placeholder=""
               required
               ref={firstFocusInput}

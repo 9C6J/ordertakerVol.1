@@ -22,7 +22,7 @@ function Ssg({image}){
         <div>
              <h1>Static Stie Generation</h1>
              <ul>
-                {image.map(image=>(<li key={image.id}>{image.imageSrc}</li>))}
+                {image?.map(image=>(<li key={image.id}>{image.imageSrc}</li>))}
              </ul>   
         </div>
     )

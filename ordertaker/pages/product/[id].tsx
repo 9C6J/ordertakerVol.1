@@ -4,6 +4,12 @@ import { Router } from 'next/router';
 import Image from 'next/image';
 import { supabase } from '../api/supabase';
 import React, { useState, useEffect} from "react";
+import { useFormFields } from "../../lib/utils";
+
+import { cn } from "../../lib/utils";
+
+import {getCookies, getCookie, setCookie, hasCookie, removeCookies} from 'cookies-next';
+
 
 // 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
 // 남용시 서버에 부담을 줄 수 있다.
@@ -41,7 +47,84 @@ type Product = {
 
 
 const DetailProduct = ({product} : {product : Product}) => {
-  const [isLoading, setLoading] = useState(true)
+  const [isLoading, setLoading] = useState(true);
+  const [iSum, setCount] = useState(product.price);
+  const [quantity, setQuantity] = useState(1);
+  
+  const handleCount = (e:React.ChangeEvent<HTMLInputElement>) => {
+    let iQuantity = parseInt(e.target.value);
+    let iSum = iQuantity * product.price;
+
+    setQuantity(iQuantity);
+    setCount(iSum);
+  }
+
+//  장바구니까지 -> 쿠키
+//  위시 리스트 -> 디비저장
+// 비회원일경우도 쿠키로처리하면 브라우저가 닫혀도 쿠키 유지시간동안 같은컴에서 장바구니를
+// 확인 할수가 있겠지요...
+// 쿠키를 구워서 장바구니를 구현하고 장바구니 비우기는 해당쿠키를 지워버리면 되지만
+// 문제는 개별 지우기가 되겠지요? 제품의 고유번호를 쿠키로 구워서 쌓이게 되는형식이 되겠지요?
+// 전 삭제 선택한 재품의 값을 받아서 그 선택한 재품의 값을 빼고 쿠키를 다시굽습니다.
+// 이렇게 되면 장바구니 개별삭제가 가능하지요~
+
+
+  const handleAddCart = ()=>{
+    let cart: {product_id: string, quantity: number}[] = [];
+
+    const sProductId : string = ''+product.id;
+
+    if(hasCookie('cart')){
+      const cartCookie = getCookie("cart");
+
+      if(typeof cartCookie === 'string'){
+        // JSON.parse(cartCookie)
+        cartCookie.indexOf(`"product_id":product_id`)
+        debugger
+      }
+      
+
+      // let iCookieQuanity : any = getCookie(sProductId);
+      // iCookieQuanity && setCookie( sProductId, Number(iCookieQuanity)+quantity, {maxAge:30000});
+      
+    }else{
+      // [{ product_id : quantity}]
+      // const aCookie = {a:b,b:c};
+      // aCookie['cart'+product.id] = quantity;
+
+      
+      // setCookie('cart', JSON.stringify(aCookie), {maxAge:30000});
+      // setCookie( sProductId, quantity, {maxAge:30000});
+
+      // let cart = JSON.parse(getCookie("cart") || "[]");
+
+      // cart.push({productId : String(product.id), quantity});
+
+      // setCookie('cart',JSON.stringify(cart), {maxAge:30000});
+
+    }
+
+    if ( confirm("장바구니에 상품을 담았습니다. 장바구니로 이동할까요?") ){
+      // 장바구니 페이지 이동
+    }else{
+      // 화면유지
+    }
+  }
+
+
+  type Order = {
+    customer_id: string;
+    total_price: number;
+    address : string;
+    payment_method : string;
+  };
+
+  // 주문
+  const onSumbit  = async (event:React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+
+  // const buttonValue = (event.target as HTMLButtonElement).activeElement?.getAttribute('value');
+  alert("주문");
   
   const InsertOrderValue = {...product};
   const InsertOrderDetailValue = {...product};
@@ -65,30 +148,45 @@ const DetailProduct = ({product} : {product : Product}) => {
   // ) tablespace pg_default;
   debugger;
     
-      <div>
+  // 파일서버 업로드 성공
+  // try {
+    // 상품등록
 
-      <form
-          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-        >
-            
-          <div className="mb-6">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            > 
-              상품명
-            </label>
-            <input
-              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="title"
-              name="title"
-              type="title"
-              placeholder=""
-              required
-              value={product.title}
-              readOnly
-            />
-          </div>
+    // total_price
+    // address
+    // payment_method
+
+    const {data, error} = await supabase.from('order').insert(product);
+    // const {data, error} = await supabase.from('orderDetail').insert(product);
+    
+    // if(error){
+    //   throw new Error(error.message);
+    // }
+
+  //   console.log(data);
+  // } catch (e) {
+  //   console.error(e);
+  //   // 에러처리
+  // }
+  // Router.push("/product/productList");
+
+  // location.reload();
+  // resetFormFields();
+
+};
+
+  return (
+      <form 
+        onSubmit={onSumbit } 
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
+        <div className="mb-6">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+          > 
+            상품명
+          </label>
+          {product.title}
+        </div>
             
         <div className="mb-6">
           <label
@@ -161,16 +259,24 @@ const DetailProduct = ({product} : {product : Product}) => {
           {iSum.toLocaleString()}원
         </div>
           
-          <div className="flex gap-2">
-            <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="submit"
-            >
-              상품등록
-            </button>
-          </div>
-        </form>
-    </div>
+        <div className="flex gap-2">
+          <button
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            onClick={handleAddCart}
+          >
+            장바구니담기
+          </button>
+        </div>
+        <div className="flex gap-2">
+          <button
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            주문하기
+          </button>
+        </div>
+      </form>
   )
 }
 

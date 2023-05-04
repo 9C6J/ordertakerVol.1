@@ -1,29 +1,24 @@
 import React, { useState, useEffect} from "react";
 
-import { supabase } from '../api/supabase';
+import { supabase } from './api/supabase';
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { cn } from "../../lib/utils";
+import { cn } from "../lib/utils";
+import {getCookies , setCookie, hasCookie, removeCookies} from 'cookies-next';
 
-// type ImageProps = {
-//   data: string;
-//   status: string;
-//   statusText : string;
-// };
-
-// const IMAGE_VALUES: ImageProps = {
-//   data: "",
-//   status: "",
-//   statusText : "",
-// };
 
 // 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
 // 남용시 서버에 부담을 줄 수 있다.
 export const getServerSideProps = async () => {
+  // { req, res }
+  // console.log(getCookies({ req, res }));
+  // console.log('--------------------');
+  // console.log(Object.assign(getCookies({ req, res })));
+
+
   const { data: products } = await supabase.from('product').select('*');
 
-  console.log(products)
   return {
     props: {
       products

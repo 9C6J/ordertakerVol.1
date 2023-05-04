@@ -80,7 +80,7 @@ const Auth: React.FC = (props) => {
 
       </div>
       {messages &&
-       messages.map((message, index) => (
+       messages?.map((message, index) => (
         <div
           key={index}
           className={classNames(

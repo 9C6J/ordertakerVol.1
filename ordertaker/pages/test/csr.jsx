@@ -24,7 +24,7 @@ export default function Csr(){
         <div>
              <h1>Client Side Rendering</h1>
              <ul>
-                {image.map(image=>(<li key={image.id}>{image.imageSrc}</li>))}
+                {image?.map(image=>(<li key={image.id}>{image.imageSrc}</li>))}
              </ul>   
         </div>
 
