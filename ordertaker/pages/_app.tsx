@@ -2,7 +2,8 @@ import React from "react";
 import type { AppProps } from 'next/app'
 import Head from "next/head";
 import '../styles/globals.css'
-import Layout from "../components/Layout";
+
+import Layout from "../components/Layout"; 
 
 
 import { MessageProvider } from "../lib/message";
