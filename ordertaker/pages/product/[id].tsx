@@ -22,15 +22,20 @@ export const getServerSideProps = async (router: { query: { id: string; }; }) =>
   .select()
   .eq('id', id) 
 
-  if(data){
-    
+  if(error){
+    console.error(error);
+    return {
+      redirect: {
+          destination: '/',
+          statusCode: 307
+      }
+    }
+  }else{
     return {
       props: {
         product : data[0]
       }
     };
-  }else if(error){
-    console.error(error);
   }
   
 }
@@ -69,48 +74,43 @@ const DetailProduct = ({product} : {product : Product}) => {
 // 이렇게 되면 장바구니 개별삭제가 가능하지요~
 
 
+  // 장바구니담기
   const handleAddCart = ()=>{
     let cart: {product_id: string, quantity: number}[] = [];
-
-    const sProductId : string = ''+product.id;
+    const sProductId : string = String(product.id);
 
     if(hasCookie('cart')){
       const cartCookie = getCookie("cart");
 
       if(typeof cartCookie === 'string'){
-        // JSON.parse(cartCookie)
-        cartCookie.indexOf(`"product_id":product_id`)
-        debugger
+
+        if(cartCookie.indexOf(`"product_id":"${sProductId}"`) > -1){
+          moveToCart(confirm("상품이 이미 장바구니에 있습니다. 장바구니로 이동할까요?"))
+        }else{
+          let aCartCookie = JSON.parse(cartCookie) ;
+          
+          if(Array.isArray(aCartCookie)){
+            aCartCookie.push({product_id : String(product.id), quantity})
+          }else{
+            aCartCookie = cart;
+            aCartCookie.push({product_id : String(product.id), quantity})
+          }
+
+          setCookie('cart',JSON.stringify(aCartCookie), {maxAge:30000});
+          moveToCart(confirm("장바구니에 상품을 담았습니다. 장바구니로 이동할까요?"));
+        }
       }
       
-
-      // let iCookieQuanity : any = getCookie(sProductId);
-      // iCookieQuanity && setCookie( sProductId, Number(iCookieQuanity)+quantity, {maxAge:30000});
-      
     }else{
-      // [{ product_id : quantity}]
-      // const aCookie = {a:b,b:c};
-      // aCookie['cart'+product.id] = quantity;
-
-      
-      // setCookie('cart', JSON.stringify(aCookie), {maxAge:30000});
-      // setCookie( sProductId, quantity, {maxAge:30000});
-
-      // let cart = JSON.parse(getCookie("cart") || "[]");
-
-      // cart.push({productId : String(product.id), quantity});
-
-      // setCookie('cart',JSON.stringify(cart), {maxAge:30000});
-
-    }
-
-    if ( confirm("장바구니에 상품을 담았습니다. 장바구니로 이동할까요?") ){
-      // 장바구니 페이지 이동
-    }else{
-      // 화면유지
+      cart.push({product_id : String(product.id), quantity});
+      setCookie('cart',JSON.stringify(cart),{maxAge:30000});
+      moveToCart(confirm("장바구니에 상품을 담았습니다. 장바구니로 이동할까요?"));
     }
   }
 
+  const moveToCart = (flag : Boolean)=>{
+    return flag ? alert("이동") : alert("취소")
+  }
 
   type Order = {
     customer_id: string;

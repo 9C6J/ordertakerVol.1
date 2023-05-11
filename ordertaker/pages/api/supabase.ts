@@ -9,8 +9,6 @@ export const supabase = createClient(
   supabaseServiceToken as string,
 );
 
-debugger;
-
 export const supabaseClient = createClient(supabaseUrl, supabaseServiceToken)
 
 

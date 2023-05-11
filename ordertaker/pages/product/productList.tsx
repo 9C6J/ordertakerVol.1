@@ -2,33 +2,29 @@ import React, { useState, useEffect} from "react";
 
 import { supabase } from '../api/supabase';
 import Image from 'next/image'
-import Link from 'next/link'
 
 import { cn } from "../../lib/utils";
-
-// type ImageProps = {
-//   data: string;
-//   status: string;
-//   statusText : string;
-// };
-
-// const IMAGE_VALUES: ImageProps = {
-//   data: "",
-//   status: "",
-//   statusText : "",
-// };
 
 // 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
 // 남용시 서버에 부담을 줄 수 있다.
 export const getServerSideProps = async () => {
-  const { data: products } = await supabase.from('product').select('*');
+  const { data: products, error } = await supabase.from('product').select('*');
 
-  console.log(products)
-  return {
-    props: {
-      products
+  if(error){
+    console.error(error);
+    return {
+      redirect: {
+          destination: '/',
+          statusCode: 307
+      }
     }
-  };
+  }else{
+    return {
+      props: {
+        products
+      }
+    };
+  }
 }
 
 function BlurImage({image} : {image : Product}) {

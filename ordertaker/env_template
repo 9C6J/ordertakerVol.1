@@ -3,3 +3,4 @@
 3) .env.production 파일: 배포/빌드 환경(process.env.NODE_ENV === 'production') 에서 적용된다.
 4) .env.test 파일: 테스트 환경(process.env.NODE_ENV === 'test') 에서 적용된다.
 5) .env.local 파일 : 가장 우선순위가 높다. 다른 파일들에 정의된 값들을 모두 덮어쓴다.(오버라이드)
+6) NODE_TLS_REJECT_UNAUTHORIZED
