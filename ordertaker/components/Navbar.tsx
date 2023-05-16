@@ -36,7 +36,7 @@ const Navbar = () => {
                 상품목록
               </a>
               <a
-                href="/product/CreateProduct"
+                href="/product/createProduct"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
                 상품등록
@@ -50,26 +50,40 @@ const Navbar = () => {
             </div>
           </div>
           {/* secondary nav */}
-          {loggedIn ? (
-            <div className="hidden md:flex items-center space-x-1">
-              ({user?.email})
-              <button className="py-5 px-3" onClick={signOut}>
-                로그아웃
-              </button>
-            </div>
-          ) : (
-            <div className="hidden md:flex items-center space-x-1">
-              <a href="/auth" className="py-5 px-3">
-                로그인
-              </a>
-              <a
-                href="/auth"
-                className="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
-              >
-                회원가입
-              </a>
-            </div>
-          )}
+          
+          {loggedIn ? 
+          
+            (
+              <div className="hidden md:flex items-center space-x-1">
+                <a href="/cart" className="py-5 px-3">
+                  장바구니
+                </a>
+                ({user?.email})
+                <button className="py-5 px-3" onClick={signOut}>
+                  로그아웃
+                </button>
+              </div>
+            ) : 
+            (
+              <div className="hidden md:flex items-center space-x-1">
+                <a href="/cart" className="py-5 px-3">
+                  장바구니
+                </a>
+                <a href="/auth" className="py-5 px-3">
+                  로그인
+                </a>
+                <a
+                  href="/auth"
+                  className="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
+                >
+                  회원가입
+                </a>
+              </div>
+            )
+          }
+          {/* <a href="/auth" className="py-5 px-3">
+              장바구니
+          </a> */}
           {/* mobile menu */}
           <div className="md:hidden flex items-center">
             <button onClick={() => setMenuToggle(!menuToggle)}>
@@ -91,8 +105,14 @@ const Navbar = () => {
         <a href="/product/productList" className="block py-2 px-4 text-sm hover:bg-gray-200">
           상품목록
         </a>
-        <a href="/product/CreateProduct" className="block py-2 px-4 text-sm hover:bg-gray-200">
+        <a href="/product/createProduct" className="block py-2 px-4 text-sm hover:bg-gray-200">
           상품등록
+        </a>
+        <a
+          href="/cart"
+          className="block py-2 px-4 text-sm hover:bg-gray-200"
+        >
+          장바구니
         </a>
         <a
           href="/profile"

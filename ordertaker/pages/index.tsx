@@ -3,15 +3,7 @@ import Head from 'next/head'
 import { useState, useEffect } from 'react';
 import Image from 'next/image'
 import orange from "../public/orange.jpeg";
-
 import { cn } from "../lib/utils";
-
-
-/**
- * 배열 안에 존재할 수 있는 falsy한 값들을 제거하여 배열을 믿을 수 있는 상태로 만들기 위해 사용
- * 참고: https://velog.io/@yongbum/filter-boolean
-*/
-
 
 export default function Main() {
   const [isLoading, setLoading] = useState(true);

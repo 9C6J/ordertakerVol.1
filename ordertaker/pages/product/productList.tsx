@@ -4,6 +4,7 @@ import { supabase } from '../api/supabase';
 import Image from 'next/image'
 
 import { cn } from "../../lib/utils";
+import ProductItem from "../../components/ProductItem";
 
 // 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
 // 남용시 서버에 부담을 줄 수 있다.
@@ -75,10 +76,9 @@ function ProductList({products} : { products : Product[]}){
     <div className="container px-5 py-10 mx-auto w-2/3">
       <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
         {products?.map((product) => (
-            <BlurImage key={product.id} image={product} />
+            <ProductItem key={product.id} product={product} linkOption={true} />
         ))}
       </div>
-
     </div>
   );
 };

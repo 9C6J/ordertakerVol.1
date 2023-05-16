@@ -1,22 +1,11 @@
 import React, { useState, useEffect} from "react";
-
 import { supabase } from './api/supabase';
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { cn } from "../lib/utils";
-import {getCookies , setCookie, hasCookie, removeCookies} from 'cookies-next';
-
+import {getCookies, getCookie , setCookie, hasCookie, removeCookies, CookieValueTypes} from 'cookies-next';
+import ProductItem  from "../components/ProductItem";
 
 // 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
 // 남용시 서버에 부담을 줄 수 있다.
 export const getServerSideProps = async () => {
-  // { req, res }
-  // console.log(getCookies({ req, res }));
-  // console.log('--------------------');
-  // console.log(Object.assign(getCookies({ req, res })));
-
-
   const { data: products } = await supabase.from('product').select('*');
 
   return {
@@ -26,60 +15,75 @@ export const getServerSideProps = async () => {
   };
 }
 
-function BlurImage({image} : {image : Product}) {
-  const [isLoading, setLoading] = useState(true)
-  return (
-    image.imageSrc? 
-      <a href={`/product/${image.id}`} >
-        <div className="group aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
-            <Image
-                alt=""
-                src={image.imageSrc}
-                priority={true}
-                width={500}
-                height={500}
-                className={cn(
-                  'duration-700 ease-in-out group-hover:opacity-80',
-                  isLoading
-                    ? 'scale-110 blur-2xl grayscale'
-                    : 'scale-100 blur-0 grayscale-0'
-                )}
-                onLoadingComplete={() => setLoading(false)}
-              />
-        </div>
-        <p className="mt-1 text-lg font-medium text-gray-900 text-right">{image.title}</p>
-        <h3 className="mt-4 text-sm text-gray-700 text-right">{(image.price).toLocaleString()} 원</h3>
-     </a> :
-     <a href={`/product/${image.id}`} >
-      <div className="group aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
-        <p className="flex justify-center items-center text-center text-gray-500">이미지없음</p>
-      </div>
-      <p className="mt-1 text-lg font-medium text-gray-900 text-right">{image.title}</p>
-      <h3 className="mt-4 text-sm text-gray-700 text-right">{(image.price).toLocaleString()} 원</h3>
-    </a>
-  )
-};
-
 type Product = {
   id: number;
+  quantity : number;
   created_at: string;
   title: string;
   imageSrc : string;
   price : number;
 };
 
-// const Gallery = (props : Image|Image[]) => {
-function ProductList({products} : { products : Product[]}){
+type ProductCookie = {
+  product_id: number;
+  quantity : number;
+};
+
+
+function Cart(){
+  const [cookie, setCookieList] = useState<ProductCookie[]>([]);  
+  const [cartList, setCartList] = useState<Product[]>([]);  
+
+  useEffect(() => {
+    // 쿠키id 값을받아서 유효성체크한후 object로 바꿔주는 공통함수필요할듯.
+    const cartCookie : CookieValueTypes = getCookie("cart");
+    console.log("cartCookie",cartCookie);
+
+    if(typeof cartCookie === "string"){
+      setCookieList(JSON.parse(cartCookie));
+      console.log("쿠키저장완료",cartCookie)
+    }else{
+      console.log("쿠키저장실패")
+    }
+  }, []);
+  
+  useEffect(() => {
+    async function fetchAndSetProduct() { 
+      console.log("cookie있나요?",cookie)
+      if(cookie.length){
+        const aProductId : Array<number> = [...cookie].map((o)=>{return o.product_id});
+        const { data , error } = await supabase.from("product")
+        .select()
+        .in('id', aProductId);
+        
+        data &&
+        setCartList(cookie.map((o)=>{
+          return Object.assign(o, data.filter((r)=>{return o.product_id == r.id})[0]); 
+        }))
+      
+      }else{
+        console.log("cookie없어요?",cookie)
+      }
+    }
+      fetchAndSetProduct(); 
+  },[cookie]);
+
     return (
     <div className="container px-5 py-10 mx-auto w-2/3">
+      장바구니목록
       <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-        {products?.map((product) => (
-            <BlurImage key={product.id} image={product} />
+        {cartList?.map((product: Product) => (
+            <ProductItem key={product.id} product={product} width={500} height={500} linkOption={true} />
         ))}
       </div>
 
+      전체선택
+
+      총상품가격, 배송비
+
+      주문하기
     </div>
   );
 };
 
-export default ProductList;
+export default Cart;

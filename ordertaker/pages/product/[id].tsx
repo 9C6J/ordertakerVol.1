@@ -1,13 +1,11 @@
 // /product/[id].tsx
 
-import { Router } from 'next/router';
 import Image from 'next/image';
 import { supabase } from '../api/supabase';
 import React, { useState, useEffect} from "react";
 import { useFormFields } from "../../lib/utils";
-
+import Router from "next/router";
 import { cn } from "../../lib/utils";
-
 import {getCookies, getCookie, setCookie, hasCookie, removeCookies} from 'cookies-next';
 
 
@@ -109,7 +107,7 @@ const DetailProduct = ({product} : {product : Product}) => {
   }
 
   const moveToCart = (flag : Boolean)=>{
-    return flag ? alert("이동") : alert("취소")
+    return flag ? Router.push("/cart") : alert("취소")
   }
 
   type Order = {
