@@ -82,6 +82,13 @@ export default function CreateProduct(){
     
     if (e.target.files) {
       files = Array.prototype.slice.call(e.target.files);
+
+      const CheckRegExpKorean: RegExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+      if(CheckRegExpKorean.test(files[0]?.name)){
+        alert(`상품이미지 파일이름을 한글이 포함되어있습니다. \n변경후 다시 시도해주세요.`)
+        return;
+      }
+
       handleUploadFiles(files);
       handleChange(e);
     }
@@ -96,13 +103,12 @@ export default function CreateProduct(){
   // 상품등록
   const handleSumbit = async (event : any) => {
     event.preventDefault();
-
     const InsertValue = {...values};
 
     if(!uploadedFiles?.name){
       confirm(`이미지 없이 등록할까요? 상품관리메뉴에서 등록 가능합니다.`);      
-    }else{
-      
+    }else{    
+
       // 파일서버 이미지 업로드
       const {data,error} = await supabase.storage
       .from('images')
@@ -125,8 +131,6 @@ export default function CreateProduct(){
       }else{
         Router.push("/product/productList");
       }
-    // location.reload();
-    // resetFormFields();
 
   };
 

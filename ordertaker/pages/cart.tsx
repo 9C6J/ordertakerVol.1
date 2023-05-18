@@ -17,23 +17,28 @@ export const getServerSideProps = async () => {
 }
 
 type Product = {
-  id: number;
+  id: string;
   quantity : number;
   created_at: string;
   title: string;
   imageSrc : string;
   price : number;
-};
+  content : string;
+}
 
 type ProductCookie = {
-  product_id: number;
+  product_id: string;
   quantity : number;
 };
 
+type PurchaseOrder = {
+
+}
 
 function Cart(){
   const [cookie, setCookieList] = useState<ProductCookie[]>([]);  
   const [cartList, setCartList] = useState<Product[]>([]);  
+  const [order, setOrder] = useState(new Map<Product["id"],Product["quantity"]>);   
 
   useEffect(() => {
     // 쿠키id 값을받아서 유효성체크한후 object로 바꿔주는 공통함수필요할듯.
@@ -41,7 +46,11 @@ function Cart(){
     console.log("cartCookie",cartCookie);
 
     if(typeof cartCookie === "string"){
-      setCookieList(JSON.parse(cartCookie));
+      const parseCookie = JSON.parse(cartCookie);
+      setCookieList(parseCookie);
+      
+      upsertAll(parseCookie);
+
       console.log("쿠키저장완료",cartCookie)
     }else{
       console.log("쿠키저장실패")
@@ -50,24 +59,62 @@ function Cart(){
   
   useEffect(() => {
     async function fetchAndSetProduct() { 
-      console.log("cookie있나요?",cookie)
       if(cookie.length){
-        const aProductId : Array<number> = [...cookie].map((o)=>{return o.product_id});
+        const aProductId : Array<string> = [...cookie].map((o)=>{return o.product_id});
         const { data , error } = await supabase.from("product")
         .select()
         .in('id', aProductId);
         
         data &&
         setCartList(cookie.map((o)=>{
-          return Object.assign(o, data.filter((r)=>{return o.product_id == r.id})[0]); 
+          return Object.assign({}, o, data.filter((r)=>{return o.product_id == r.id})[0]); 
         }))
       
-      }else{
-        console.log("cookie없어요?",cookie)
       }
+
+      // if(order.size){
+      //   let arrCartList : Array<Product> = [];
+      //   let arrProductId : Array<string> = [];
+      //   order.forEach((value,key)=>{return arrProductId.push(key)})
+      //   // for (const [key, value] of order) {
+      //   //   arrProductId.push(key)
+      //   // }
+        
+      //   const { data , error } = await supabase.from("product")
+      //   .select()
+      //   .in('id', arrProductId);
+
+      //   data && 
+      //   order.forEach((value,key)=>{
+      //     // return arrProductId.push(key)
+      //     arrCartList.push(Object.assign({}, {product_id:key,quantity:value}, data.filter((r)=>{return key == r.id})[0])); 
+      //   }) 
+      //   setCartList(arrCartList)
+      // }
     }
       fetchAndSetProduct(); 
-  },[cookie]);
+  },[cartList,order]);
+
+  const handleMap = (e:any, type:'update'|'delete'|'sum', key : String, )=>{
+    const handler = {
+      update: () =>{
+        setOrder((prev) => new Map((prev).set(String(key),e.target.value)));
+      },
+      delete: () =>{
+      },
+      sum: () =>{
+        // [...order]
+      }
+    }[type]()
+  }
+  const upsert = (key : Product["id"], value : Product["quantity"]) => {
+    setOrder((prev) => (prev).set(key,value));
+  }
+  const upsertAll = (array : ProductCookie[]) => {
+    array.map((o)=>{
+      setOrder((prev) => new Map((prev).set(o["product_id"],o["quantity"])));
+    })
+  }
 
     return (
       
@@ -79,41 +126,8 @@ function Cart(){
                 {/* 장바구니리스트 */}
                 <div className="lg:w-3/5 md:w-8/12 w-full lg:px-8 lg:py-14 md:px-6 px-4 md:py-8 py-4 bg-white dark:bg-gray-800 overflow-y-hidden overflow-x-hidden lg:h-screen h-auto" id="scroll">
                   <p className="lg:text-4xl text-3xl font-black leading-10 text-gray-800 dark:text-white pt-3">장바구니</p>
-                  <div className="md:flex items-strech py-8 md:py-10 lg:py-8 border-t border-gray-50">
-                    <div className="md:w-4/12 2xl:w-1/4 w-full">
-                      {/* 웹 */}
-                      <img src="https://i.ibb.co/SX762kX/Rectangle-36-1.png" alt="Black Leather Bag" className="h-full object-center object-cover md:block hidden" />
-                      {/* 모바일 */}
-                      <img src="https://i.ibb.co/g9xsdCM/Rectangle-37.pngg" alt="Black Leather Bag" className="md:hidden w-full h-full object-center object-cover" />
-                    </div>
-                    <div className="md:pl-3 md:w-8/12 2xl:w-3/4 flex flex-col justify-center">
-                      <p className="text-xs leading-3 text-gray-800 dark:text-white md:pt-0 pt-4">RF293</p>
-                      <div className="flex items-center justify-between w-full pt-1">
-                        {/* 상품이름 */}
-                        <p className="text-base font-black leading-none text-gray-800 dark:text-white">North wolf bag</p>
-                        <select aria-label="Select quantity" className="py-2 px-1 border border-gray-200 mr-6 focus:outline-none dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
-                          <option>01</option>
-                          <option>02</option>
-                          <option>03</option>
-                          <option>04</option>
-                          <option>05</option>
-                        </select>
-                      </div>
-                      {/* 상품설명 */}
-                      <p className="text-xs leading-3 text-gray-600 dark:text-white pt-2">Height: 10 inches</p>
-                      <p className="text-xs leading-3 text-gray-600 dark:text-white py-4">Color: Black</p>
-                      <p className="w-96 text-xs leading-3 text-gray-600 dark:text-white">Composition: 100% calf leather</p>
-                      <div className="flex items-center justify-between pt-5">
-                        <div className="flex itemms-center">
-                          <p className="text-xs leading-3 underline text-gray-800 dark:text-white cursor-pointer">상세정보</p>
-                          <p className="text-xs leading-3 underline text-red-500 pl-5 cursor-pointer">삭제</p>
-                        </div>
-                        <p className="text-base font-black leading-none text-gray-800 dark:text-white">3,000</p>
-                      </div>
-                    </div>
-                  </div>
                   {cartList?.map((product: Product) => (
-                      <CartItem key={product.id} product={product} linkOption={false} />
+                      <CartItem key={product.id} product={product} linkOption={false} handleMap={handleMap}  />
                   ))}
                 </div>
 
@@ -121,10 +135,10 @@ function Cart(){
                 <div className="lg:w-96 md:w-8/12 w-full bg-gray-100 dark:bg-gray-900 h-full">
                   <div className="flex flex-col lg:h-screen h-auto lg:px-8 md:px-7 px-4 lg:py-20 md:py-10 py-6 justify-between overflow-y-auto">
                     <div>
-                      <p className="lg:text-4xl text-3xl font-black leading-9 text-gray-800 dark:text-white">Summary</p>
+                      <p className="lg:text-4xl text-3xl font-black leading-9 text-gray-800 dark:text-white">주문서</p>
                       <div className="flex items-center justify-between pt-16">
                         <p className="text-base leading-none text-gray-800 dark:text-white">총 상품가격</p>
-                        <p className="text-base leading-none text-gray-800 dark:text-white">1,000</p>
+                        <p className="text-base leading-none text-gray-800 dark:text-white">1</p>
                       </div>
                       <div className="flex items-center justify-between pt-5">
                         <p className="text-base leading-none text-gray-800 dark:text-white">할인</p>
@@ -138,7 +152,7 @@ function Cart(){
                     <div>
                       <div className="flex items-center pb-6 justify-between lg:pt-5 pt-20">
                         <p className="text-2xl leading-normal text-gray-800 dark:text-white">총 주문금액</p>
-                        <p className="text-2xl font-bold leading-normal text-right text-gray-800 dark:text-white">22,240</p>
+                        <p className="text-2xl font-bold leading-normal text-right text-gray-800 dark:text-white">{order}</p>
                       </div>
                       <button  className="text-base leading-none w-full py-5 bg-gray-800 border-gray-800 border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-white dark:hover:bg-gray-700">주문하기</button>
                       {/* onClick="checkoutHandler1(true)" */}
