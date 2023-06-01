@@ -2,6 +2,8 @@ import Link from "next/link";
 import React, { useState } from "react";
 import BlurImage from "./BlurImage";
 import Image from 'next/image'
+import {getCookies, getCookie, setCookie, hasCookie, removeCookies} from 'cookies-next';
+import { _getJsonCookie } from "../lib/utils";
 
 type Product = {
   id: string;
@@ -22,6 +24,21 @@ export default function CartItem(
     handleMap? : any
   },
   ) {
+
+    function updateCartCookie(e:React.ChangeEvent<HTMLInputElement>, product_id:Product["id"]){
+      const cartCookie = _getJsonCookie("cart");
+      let bUpdateCookie : boolean = false;
+
+      const aUpdatedCookie = cartCookie.map((o:any)=>{
+        if(o.product_id == props.product.id){
+          o.quantity = e.target.value;
+          bUpdateCookie = true;
+        }
+        return o;
+      })
+      bUpdateCookie && setCookie('cart',JSON.stringify(aUpdatedCookie), {maxAge:30000});
+    }
+
   return (
     // 여기까지 a태그
     <div className="md:flex items-strech py-8 md:py-10 lg:py-8 border-t border-gray-50">
@@ -38,8 +55,8 @@ export default function CartItem(
         <div className="flex items-center justify-between w-full pt-1">
           {/* 상품이름 */}
           <p className="text-base font-black leading-none text-gray-800 dark:text-white">{props.product.title}</p>
-          <input type="number" defaultValue={props.product.quantity} onChange={(e)=>{props.handleMap(e,'update',props.product.id)}}/>
-          
+          <input type="number" defaultValue={props.product.quantity} onChange={(e)=>{props.handleMap(e,'update',props.product.id)}} onBlur={(e)=>{updateCartCookie(e,props.product.id)}} />
+
           {/* <select aria-label="Select quantity" className="py-2 px-1 border border-gray-200 mr-6 focus:outline-none dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
             <option>01</option>
             <option>02</option>

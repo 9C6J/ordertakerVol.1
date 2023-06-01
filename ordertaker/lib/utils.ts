@@ -1,3 +1,4 @@
+import { getCookie } from 'cookies-next';
 import { useState } from 'react'
 
 export function useFormFields<T>(
@@ -45,3 +46,14 @@ export function cn(...classes: string[]) {
 //     return [message, handleMessage];
 
 // }
+
+export function _getJsonCookie(key : string){
+    const cookie = getCookie(key);
+    
+    if(typeof cookie === "string"){
+        return JSON.parse(cookie);
+    }else{
+        return []
+    }
+
+}
