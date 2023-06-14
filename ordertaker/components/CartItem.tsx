@@ -30,10 +30,14 @@ export default function CartItem(
     function updateCartCookie(e:React.ChangeEvent<HTMLInputElement>, product_id:Product["id"]){
       let sTargetValue = e.target.value;
 
-
+      debugger;
       if (parseInt(sTargetValue) > props.product.order_qunatity_limit ){
         sTargetValue = String(props.product.order_qunatity_limit);
+      } else if (parseInt(sTargetValue) < 1 ){
+        alert("최소 주문수량은 1개 입니다.");
+        sTargetValue = "1";
       }
+
       
       props.handleMap(sTargetValue,'update',props.product.id);
 
