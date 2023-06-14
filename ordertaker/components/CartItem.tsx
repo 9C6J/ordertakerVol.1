@@ -30,10 +30,9 @@ export default function CartItem(
     function updateCartCookie(e:React.ChangeEvent<HTMLInputElement>, product_id:Product["id"]){
       let sTargetValue = e.target.value;
 
+
       if (parseInt(sTargetValue) > props.product.order_qunatity_limit ){
         sTargetValue = String(props.product.order_qunatity_limit);
-      }else if(!sTargetValue){
-        sTargetValue = "1";
       }
       
       props.handleMap(sTargetValue,'update',props.product.id);
