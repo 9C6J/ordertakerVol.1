@@ -107,7 +107,7 @@ const DetailProduct = ({product} : {product : Product}) => {
   }
 
   const moveToCart = (flag : Boolean)=>{
-    return flag ? Router.push("/cart") : alert("취소")
+    return flag ? Router.push("/cart") : ''
   }
 
   type Order = {
@@ -274,6 +274,16 @@ const DetailProduct = ({product} : {product : Product}) => {
             주문하기
           </button>
         </div>
+        <div className="flex gap-2">
+          <button
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            onClick={()=>{Router.push("/product/productList")}}
+          >
+            목록으로
+          </button>
+        </div>
+
       </form>
   )
 }

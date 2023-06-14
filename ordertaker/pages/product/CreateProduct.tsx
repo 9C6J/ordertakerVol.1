@@ -15,7 +15,8 @@ type Product = {
   title : string;// 상품제목 
   price : number;// 상품가격 
   imageSrc : string | null;// 상품이미지 
-  size : number | null;// 상품사이즈 
+  size : number | null;// 상품사이즈
+  order_qunatity_limit : number;// 1회구매시 최대수량 
   content : string;// 상품설명 
 
 };
@@ -26,6 +27,7 @@ const PRODUCT_FORM_VALUES: Product = {
   price : 0,
   imageSrc : null,
   size : null,
+  order_qunatity_limit : 10,
   content : "",
 };
 
@@ -274,6 +276,26 @@ export default function CreateProduct(){
               value={values.content}
               onChange={handleChange}
               required
+            />
+          </div>
+
+          <div className="mb-6">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="password"
+            > 
+              구매시 최대수량
+            </label>
+            <input
+              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              id="order_qunatity_limit"
+              name="order_qunatity_limit"
+              type="number"
+              placeholder=""
+              required
+              defaultValue={values.order_qunatity_limit}
+              onChange={handleChange}
+              min="0"
             />
           </div>
           
