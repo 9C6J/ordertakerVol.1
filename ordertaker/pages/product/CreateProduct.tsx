@@ -31,7 +31,6 @@ const PRODUCT_FORM_VALUES: Product = {
   content : "",
 };
 
-
 export default function CreateProduct(){
 
   const [values, handleChange, resetFormFields] = useFormFields<Product>(PRODUCT_FORM_VALUES);

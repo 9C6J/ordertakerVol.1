@@ -57,3 +57,9 @@ export function _getJsonCookie(key : string){
     }
 
 }
+
+export function _isNotNumber(value : string){
+    const regExp = /[a-z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g;
+
+    return regExp.test(value);
+}

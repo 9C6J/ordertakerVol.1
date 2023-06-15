@@ -211,28 +211,28 @@ function Cart(){
 
     return (
       
-      <div className="w-full h-full top-0 sticky-0" id="chec-div">
+      <div className="top-0 sticky-0" id="chec-div">
           <div className="container px-5 py-0 mx-auto w-2/3">
-            <div className="w-full absolute z-10 right-0 h-full overflow-x-hidden" id="checkout">
+            <div className="w-full absolute z-10 right-0  " >
             {/* transform translate-x-0 transition ease-in-out duration-700 */}
               <div className="flex items-end lg:flex-row flex-col justify-end" id="cart">
                 {/* 장바구니리스트 */}
-                <div className="lg:w-3/5 md:w-8/12 w-full lg:px-8 lg:py-14 md:px-6 px-4 md:py-8 py-4 bg-white dark:bg-gray-800 overflow-y-hidden overflow-x-hidden lg:h-screen h-auto" id="scroll">
+                <div className="lg:w-3/5  w-full h-auto lg:px-8 lg:py-14 md:px-6 px-4 md:py-8 py-4 bg-white dark:bg-gray-800 overflow-y-hidden overflow-x-hidden  " id="scroll">
+                  {/*  */}
                   <p className="lg:text-4xl text-3xl font-black leading-10 text-gray-800 dark:text-white pt-3">장바구니</p>
-                  
                   {
                     cartList.length ?
-                    cartList.map((product: Product) => (
-                        <CartItem key={product.id} product={product} linkOption={false} handleMap={handleMap}/>
+                    cartList.map((product: Product, idx) => (
+                        <CartItem key={idx} product={product} linkOption={false} handleMap={handleMap}/>
                     )) 
                     : <p> 담긴 상품이 없습니다. </p>
                   } 
-
                 </div>
         
                 {/* 합계 */}
-                <div className="lg:w-96 md:w-8/12 w-full bg-gray-100 dark:bg-gray-900 h-full">
-                  <div className="flex flex-col lg:h-screen h-auto lg:px-8 md:px-7 px-4 lg:py-20 md:py-10 py-6 justify-between overflow-y-auto">
+                <div className="lg:sticky lg:bottom-7 lg:w-96 w-full h-full bg-gray-100 dark:bg-gray-900 ">
+                  <div className="flex flex-col h-auto lg:px-8 md:px-7 px-4 lg:py-20 md:py-10 py-6 justify-between overflow-y-auto">
+                  {/* lg:h-screen  */}
                     <div>
                     
                       <p className="lg:text-4xl text-3xl font-black leading-9 text-gray-800 dark:text-white">주문서</p>

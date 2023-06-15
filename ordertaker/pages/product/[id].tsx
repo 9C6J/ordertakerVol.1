@@ -7,6 +7,7 @@ import { useFormFields } from "../../lib/utils";
 import Router from "next/router";
 import { cn } from "../../lib/utils";
 import {getCookies, getCookie, setCookie, hasCookie, removeCookies} from 'cookies-next';
+import Numericinput from '../../components/Numericinput';
 
 
 // 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
@@ -46,6 +47,7 @@ type Product = {
   price : number;
   content : string;
   quantity : number;
+  order_qunatity_limit : number;
 };
 
 
@@ -54,12 +56,16 @@ const DetailProduct = ({product} : {product : Product}) => {
   const [iSum, setCount] = useState(product.price);
   const [quantity, setQuantity] = useState(1);
   
-  const handleCount = (e:React.ChangeEvent<HTMLInputElement>) => {
-    let iQuantity = parseInt(e.target.value);
-    let iSum = iQuantity * product.price;
 
-    setQuantity(iQuantity);
+  useEffect(() => {
+    const iSum = quantity * product.price;
     setCount(iSum);
+    
+  },[quantity]);
+
+  const handleCount = (sTargetValue:string) => {
+    const iQuantity = parseInt(sTargetValue);
+    setQuantity(iQuantity);
   }
 
 //  장바구니까지 -> 쿠키
@@ -144,7 +150,6 @@ const DetailProduct = ({product} : {product : Product}) => {
   //   created_at timestamp with time zone null default now(),
   //   constraint order_pkey primary key (id)
   // ) tablespace pg_default;
-  debugger;
     
   // 파일서버 업로드 성공
   // try {
@@ -240,11 +245,16 @@ const DetailProduct = ({product} : {product : Product}) => {
           > 
             주문수량
           </label>
-          <input 
-            type="number"
-            value={quantity}
-            onChange={(e)=> { handleCount(e); }}
-          />
+          <Numericinput
+              id="numericInput"
+              inputMode="numeric" // 모바일환경 숫자키패드 옵션
+              value={quantity} 
+              onChange={(e:any)=>{
+                handleCount(e)
+              }} 
+              min={1} 
+              max={product.order_qunatity_limit}
+            />
         </div>
 
         <div className="mb-6">
@@ -254,7 +264,7 @@ const DetailProduct = ({product} : {product : Product}) => {
           > 
             주문총금액
           </label>
-          {iSum.toLocaleString()}원
+          {iSum? iSum.toLocaleString() : 0}원
         </div>
           
         <div className="flex gap-2">

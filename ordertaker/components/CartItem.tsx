@@ -5,6 +5,7 @@ import Image from 'next/image'
 import {getCookies, getCookie, setCookie, hasCookie, removeCookies} from 'cookies-next';
 import { _getJsonCookie } from "../lib/utils";
 import Numericinput from "./Numericinput";
+import ProductItem from "./ProductItem";
 
 type Product = {
   id: string;
@@ -26,22 +27,7 @@ export default function CartItem(
     handleMap? : any
   },
   ) {
- 
-    function updateCartCookie(e:React.ChangeEvent<HTMLInputElement>, product_id:Product["id"]){
-      let sTargetValue = e.target.value;
 
-      debugger;
-      if (parseInt(sTargetValue) > props.product.order_qunatity_limit ){
-        sTargetValue = String(props.product.order_qunatity_limit);
-      } else if (parseInt(sTargetValue) < 1 ){
-        alert("최소 주문수량은 1개 입니다.");
-        sTargetValue = "1";
-      }
-
-      
-      props.handleMap(sTargetValue,'update',props.product.id);
-
-    }
 
   return (
     // 여기까지 a태그
@@ -53,14 +39,14 @@ export default function CartItem(
         <BlurImage
             imageSrc={props.product.imageSrc}
             width={500}
-            height={10}
+            height={500}
             className="h-full object-center object-cover md:block hidden"
           />
         {/* 모바일 */}
         <BlurImage
             imageSrc={props.product.imageSrc}
-            width={500}
-            height={10}
+            width={1000}
+            height={500}
             className="md:hidden w-full h-full object-center object-cover"
           />
         {/* <img src={props.product.imageSrc} alt="Black Leather Bag" className="md:hidden w-full h-full object-center object-cover" /> */}
@@ -73,10 +59,9 @@ export default function CartItem(
           <p className="text-base font-black leading-none text-gray-800 dark:text-white">{props.product.title}</p>
             <Numericinput
               id="numericInput"
-              inputMode="numeric" // 모바일환경 숫자키패드 옵션
               value={props.product.quantity} 
               onChange={(e:any)=>{
-                updateCartCookie(e,props.product.id)
+                props.handleMap(e,'update',props.product.id);
               }} 
               min={1} 
               max={props.product.order_qunatity_limit} 
