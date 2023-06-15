@@ -8,6 +8,7 @@ import Router from "next/router";
 import { cn } from "../../lib/utils";
 import {getCookies, getCookie, setCookie, hasCookie, removeCookies} from 'cookies-next';
 import Numericinput from '../../components/Numericinput';
+import BlurImage from '../../components/BlurImage';
 
 
 // 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
@@ -181,7 +182,7 @@ const DetailProduct = ({product} : {product : Product}) => {
   return (
       <form 
         onSubmit={onSumbit } 
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 content-center" >
         <div className="mb-6">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
@@ -201,31 +202,26 @@ const DetailProduct = ({product} : {product : Product}) => {
           {(product.price).toLocaleString()} 원
         </div>
             
-        <div className="mb-6 w-1/4">
+        <div className="mb-6 " >
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
           > 
             상품이미지
-          </label>
-          {product.imageSrc ? 
-                <Image
-                    alt=""
-                    src={product.imageSrc}
-                    priority={true}
-                    width={500}
-                    height={500}
-                    className={cn(
-                      'duration-700 ease-in-out group-hover:opacity-80',
-                      isLoading
-                        ? 'scale-110 blur-2xl grayscale'
-                        : 'scale-100 blur-0 grayscale-0'
-                    )}
-                    onLoadingComplete={() => setLoading(false)}
-                  />
-          : 
-          <div className="overflow-hidden rounded-lg bg-gray-200 h-40 flex justify-center items-center" >
-            <p className="text-gray-500">이미지없음</p>
-          </div>} 
+          </label> 
+          {/* 웹 */}
+          <BlurImage
+            imageSrc={product.imageSrc}
+            width={500}
+            height={500}
+            className="h-full object-center object-cover md:block hidden"
+          />
+          {/* 모바일 */}
+          <BlurImage
+            imageSrc={product.imageSrc}
+            width={1000}
+            height={500}
+            className="md:hidden w-full h-full object-center object-cover"
+          />
         </div> 
           
         <div className="mb-6">
