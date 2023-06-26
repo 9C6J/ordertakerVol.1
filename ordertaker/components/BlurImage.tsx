@@ -13,7 +13,6 @@ export default function BlurImage(
   const [isLoading, setLoading] = useState(true)
   return (
     props.imageSrc? 
-      // <a>
         <div className={props.className || "group aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8"}>
             <Image
                 alt=""
@@ -30,15 +29,12 @@ export default function BlurImage(
                 onLoadingComplete={() => setLoading(false)}
               />
         </div>
-    //  </a> 
      :
-    //  <a href={`/product/${image.id}`} >
     <div className={props.className}>
       <div className={"group aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8"}>
         <p className="flex justify-center items-center text-center text-gray-500">이미지없음</p>
       </div>
     </div>
-    // </a>
   )
 };
 

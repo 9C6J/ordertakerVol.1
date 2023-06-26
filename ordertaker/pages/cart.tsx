@@ -1,12 +1,13 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useRef} from "react";
 import { supabase } from './api/supabase';
 import {getCookies, getCookie , setCookie, hasCookie, removeCookies, CookieValueTypes} from 'cookies-next';
 import ProductItem  from "../components/ProductItem";
 import CartItem  from "../components/CartItem";
+import Order  from "../components/Order";
 
 import { useSetRecoilState, useRecoilValue ,useResetRecoilState } from 'recoil';
 import { contentState } from '../recoil/state';
-import { _getJsonCookie } from "../lib/utils";
+import { useFormFields, _getJsonCookie } from "../lib/utils";
 import Router from "next/router";
 
 
@@ -40,27 +41,35 @@ type Product = {
 
 // 주문
 type PurchaseOrder = {
-  // customer_id: string;
   // id: string;
+  // customer_id: string;
   // order_at: Date;
-  total_price: number,
-  address: string,
-  payment_method_code: string,
-  payment_method_name: string,
-  status: string,
-  // created_at: Date
+  total_price: number // 주문총금액
+  ,address: string    // 받을주소
+  ,payment_method: string // 주문방법
+  ,status: string // 주문상태
+  ,purchaser_name : string // 구매자이름
+  ,recipient_name : string // 수령인이름
+  ,purchaser_phoneNumber : string // 구매자연락처
+  ,recipient_phoneNumber : string // 수령인연락처
+  ,order_request : string // 배송요청사항
 }
+
 
 // 주문서 초기화
 const PURCHASE_FORM_VALUES: PurchaseOrder = {
+  // id: string;
   // customer_id: string;
   // order_at: Date;
-  total_price: 0,
-  address: "",
-  payment_method_code: "mu",
-  payment_method_name: "무통장",
-  status: "",
-  // created_at: Date
+  total_price: 0 // 주문총금액
+  ,address: ""    // 받을주소
+  ,payment_method: "무통장" // 주문방법
+  ,status: "주문요청" // 주문상태     주문요청 주문확인 배송중 배송완료
+  ,purchaser_name : "" // 구매자이름
+  ,recipient_name : "" // 수령인이름
+  ,purchaser_phoneNumber : "" // 구매자연락처
+  ,recipient_phoneNumber : "" // 수령인연락처
+  ,order_request : "" // 배송요청사항
 };
 
 // 주문상세
@@ -75,31 +84,25 @@ type PurchaseOrderDetail = {
 
 
 
-
 function Cart(){
   // 쿠키
-  const [cartCookie, setCartCookie] = useState<ProductCookie[]>([]);  
+  // const [cartCookie, setCartCookie] = useState<ProductCookie[]>([]);  
   // 상품
   const [product, setProduct] = useState<Product[]>([]);
   // 장바구니리스트
   const [cartList, setCartList] = useState<Product[]>([]);
   // 주문서
+  const [orderBtn, setOrderBtn] = useState(false);
   const [order, setOrder] = useState<PurchaseOrder>(PURCHASE_FORM_VALUES);   
-  // const [order, setOrder] = useState<PurchaseOrderDetail>();   
-  // const [order, setOrder] = useState(new Map<Product["id"],Product["quantity"]>);   
+  const [orderValues, handleChange, resetFormFields] = useFormFields<PurchaseOrder>(PURCHASE_FORM_VALUES);
 
-  // const [reqContent, setReqContent] = useState({
-  //   name:'sample',status:true,message:'xptmxm'
-  // })
-  // const setContent = useSetRecoilState(contentState);
-  // const content = useRecoilValue(contentState);
-
-  // useEffect(() => {
-      
-  //     // upsertAll(cookie);
-
-  // }, []);
+  const orderRef = useRef<HTMLDivElement>(null);
   
+  const onHomeClick = () => {
+    setOrderBtn(true);
+    orderRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
     async function fetchAndSetProduct() { 
       const cookie = _getJsonCookie("cart");
@@ -118,6 +121,12 @@ function Cart(){
       fetchAndSetProduct(); 
   },[]);
 
+  // useEffect(() => {
+  //   orderRef.current?.scrollIntoView({ behavior: 'smooth' });
+    
+
+  // },[orderBtn]);
+
   useEffect(() => {
       onSetCartList();
   },[product]);
@@ -126,10 +135,10 @@ function Cart(){
     let sum = 0;
     let oOrder = {...order};
 
+    // 총주문금액
     cartList.forEach((o)=>{
       sum += o.quantity * o.price;
     });
-
     oOrder.total_price = sum;
     setOrder(oOrder);
     
@@ -138,9 +147,6 @@ function Cart(){
   function onSetCartList(){
     const cookie = _getJsonCookie("cart");
 
-    // console.log("handleMapCookie==>",cookie)
-    // console.log("product==>",product)
-
     product && 
     setCartList(cookie.map((o: { product_id: string; })=>{
       return Object.assign({}, o, product.filter((r)=>{return o.product_id == r.id})[0]); 
@@ -148,7 +154,7 @@ function Cart(){
     // console.log("cookie==>",cookie)
   }
 
-  const handleMap = (e:any, type:'update'|'delete'|'detail', key : String, )=>{
+  const handleMap = (e:any, type:'update'|'delete'|'detail'|'order', key : String, )=>{
 
     const handler = {
       update: (
@@ -173,9 +179,8 @@ function Cart(){
       },
       delete: (
         e:any
-        , key : String
+        , key : any
       ) =>{
-        debugger;
         const cartCookie = _getJsonCookie("cart");
         let bUpdateCookie : boolean = false;
   
@@ -197,18 +202,13 @@ function Cart(){
       ) =>{
         // [...order]
         Router.push(`/product/${key}`);
+      },
+      order : ( e:any
+        , orderValues : PurchaseOrder
+      ) =>{
       }
     }[type](e,key)
   }
-  const upsert = (key : Product["id"], value : Product["quantity"]) => {
-    // setOrder((prev) => (prev).set(key,value));
-  }
-  const upsertAll = (array : ProductCookie[]) => {
-    array.map((o)=>{
-      // setOrder((prev) => new Map((prev).set(o["product_id"],o["quantity"])));
-    })
-  }
-
     return (
       
       <div className="top-0 sticky-0" id="chec-div">
@@ -227,8 +227,14 @@ function Cart(){
                     )) 
                     : <p> 담긴 상품이 없습니다. </p>
                   } 
+
+                  {
+                    cartList.length&&orderBtn ? <Order  ref={orderRef} orderValues={orderValues} handleChange={handleChange} handleMap={handleMap}/> : <></>
+                  } 
+                
                 </div>
-        
+
+                  
                 {/* 합계 */}
                 <div className="lg:sticky lg:bottom-7 lg:w-96 w-full h-full bg-gray-100 dark:bg-gray-900 ">
                   <div className="flex flex-col h-auto lg:px-8 md:px-7 px-4 lg:py-20 md:py-10 py-6 justify-between overflow-y-auto">
@@ -255,12 +261,29 @@ function Cart(){
                         <p className="text-2xl leading-normal text-gray-800 dark:text-white">총 주문금액</p>
                         <p className="text-2xl font-bold leading-normal text-right text-gray-800 dark:text-white">{(order.total_price)?.toLocaleString()} 원</p>
                       </div>
-                      <button  className="text-base leading-none w-full py-5 bg-gray-800 border-gray-800 border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-white dark:hover:bg-gray-700">주문하기</button>
-                      {/* onClick="checkoutHandler1(true)" */}
+                      {
+                        cartList.length? 
+                          <button  
+                            className="text-base leading-none w-full py-5 bg-gray-800 border-gray-800 border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-white dark:hover:bg-gray-700"
+                            onClick={(e)=>{ !orderBtn ? onHomeClick() : handleMap(e,'order', orderValues)}}
+                          >
+                            주문하기
+                          </button>
+                          : 
+                          <button  
+                            className="text-base leading-none w-full py-5 bg-gray-800 border-gray-800 border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-white dark:hover:bg-gray-700"
+                            onClick={(e)=>{ Router.push(`/product/productList`)}}
+                          >
+                            상품구경하기
+                          </button>
+                      } 
+                      
                     </div>
                   </div>
                 </div>
               </div>
+
+              
             </div>
           </div>
       </div>
