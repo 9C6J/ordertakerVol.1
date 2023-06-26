@@ -265,7 +265,7 @@ function Cart(){
                         cartList.length? 
                           <button  
                             className="text-base leading-none w-full py-5 bg-gray-800 border-gray-800 border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-white dark:hover:bg-gray-700"
-                            onClick={(e)=>{ !orderBtn ? onHomeClick() : handleMap(e,'order', orderValues)}}
+                            onClick={(e)=>{ !orderBtn ? onHomeClick() : handleMap(e,'order', '')}}
                           >
                             주문하기
                           </button>
