@@ -96,11 +96,11 @@ function Cart(){
   const [order, setOrder] = useState<PurchaseOrder>(PURCHASE_FORM_VALUES);   
   const [orderValues, handleChange, resetFormFields] = useFormFields<PurchaseOrder>(PURCHASE_FORM_VALUES);
 
-  const orderRef = useRef<HTMLDivElement>(null);
+  const ref = useRef();
   
   const onHomeClick = () => {
     setOrderBtn(true);
-    orderRef.current?.scrollIntoView({ behavior: 'smooth' });
+    ref.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -122,7 +122,7 @@ function Cart(){
   },[]);
 
   // useEffect(() => {
-  //   orderRef.current?.scrollIntoView({ behavior: 'smooth' });
+  //   ref.current?.scrollIntoView({ behavior: 'smooth' });
     
 
   // },[orderBtn]);
@@ -154,7 +154,7 @@ function Cart(){
     // console.log("cookie==>",cookie)
   }
 
-  const handleMap = (e:any, type:'update'|'delete'|'detail'|'order', key : String, )=>{
+  const handleMap = (e:any, type:'update'|'delete'|'detail'|'order'|'orderSubmit', key : String, )=>{
 
     const handler = {
       update: (
@@ -206,6 +206,12 @@ function Cart(){
       order : ( e:any
         , orderValues : PurchaseOrder
       ) =>{
+        document?.querySelector('#btnOrderSubmit')?.click();
+      },
+      orderSubmit : ( e:any
+        , orderValues : PurchaseOrder
+      ) =>{
+        e.preventDefault();
       }
     }[type](e,key)
   }
@@ -229,9 +235,10 @@ function Cart(){
                   } 
 
                   {
-                    cartList.length&&orderBtn ? <Order  ref={orderRef} orderValues={orderValues} handleChange={handleChange} handleMap={handleMap}/> : <></>
+                    cartList.length&&orderBtn ? <Order  ref={ref} orderValues={orderValues} handleChange={handleChange} handleMap={handleMap}/> : <></>
                   } 
                 
+                {/* <Order  ref={ref} orderValues={orderValues} handleChange={handleChange} handleMap={handleMap}/> */}
                 </div>
 
                   

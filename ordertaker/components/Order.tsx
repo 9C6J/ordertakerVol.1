@@ -32,6 +32,10 @@ export default React.forwardRef((
   ref : any  
 ) => {
 
+  const handleSumbit = (event: React.FormEvent) => {
+    event.preventDefault();
+    debugger;
+  };
 
   return (
     // 여기까지 a태그
@@ -39,16 +43,23 @@ export default React.forwardRef((
       <p className="lg:text-4xl text-3xl font-black leading-10 text-gray-800 dark:text-white pt-3">주문</p>
 
       <form
-        onSubmit={(e)=>{props.handleMap(e,'order');}}
         className="  px-8 pt-6 pb-8 mb-4"
       >
         <div className="">
+            <button
+              className="hidden"
+              type="submit"
+              onClick={(e)=> props.handleMap(e,'orderSubmit',props.orderValues)}
+              id="btnOrderSubmit"
+            >
+              변경
+            </button>
 
           {/* 주문정보 */}
           <div >
             {/* 구매자이름 */}
             <p className="lg:text-2xl text-2xl font-black leading-10 text-gray-800 dark:text-white pt-3 mb-4">구매자정보</p>
-            <div ref={ref.orderRef} className="md:flex md:items-center mb-6">
+            <div ref={ref} className="md:flex md:items-center mb-6">
               <div className="lg:w-2/12 md:w-3/12">
                 <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" >
                   구매자이름 :
