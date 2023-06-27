@@ -38,7 +38,6 @@ export default React.forwardRef((
 
   const handleSumbit = (event: React.FormEvent) => {
     event.preventDefault();
-    debugger;
   };
 
 

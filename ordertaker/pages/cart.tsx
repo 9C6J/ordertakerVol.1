@@ -100,7 +100,6 @@ function Cart(){
   
   const onHomeClick = () => {
     setOrderBtn(true);
-    ref.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -206,7 +205,8 @@ function Cart(){
       order : ( e:any
         , orderValues : PurchaseOrder
       ) =>{
-        document?.querySelector('#btnOrderSubmit')?.click();
+        const btnOrderSubmit : HTMLButtonElement|null = document.querySelector('#btnOrderSubmit');
+        btnOrderSubmit?.click();
       },
       orderSubmit : ( e:any
         , orderValues : PurchaseOrder
