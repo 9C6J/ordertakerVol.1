@@ -32,10 +32,15 @@ export default React.forwardRef((
   ref : any  
 ) => {
 
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: 'smooth' });
+  },[]);
+
   const handleSumbit = (event: React.FormEvent) => {
     event.preventDefault();
     debugger;
   };
+
 
   return (
     // 여기까지 a태그
