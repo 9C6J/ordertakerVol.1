@@ -23,12 +23,6 @@ const Navbar = () => {
 
             {/* primary nav */}
             <div className="hidden md:flex items-center space-x-1">
-            <a
-                href="/gallery"
-                className="py-5 px-3 text-gray-700 hover:text-gray-900"
-              >
-                갤러리
-              </a>
               <a
                 href="/product/productList"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
@@ -36,29 +30,38 @@ const Navbar = () => {
                 상품목록
               </a>
               <a
-                href="/product/createProduct"
+                href="/product/productList"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
-                상품등록
+                주문조회
               </a>
-              <a
-                href="/profile"
-                className="py-5 px-3 text-gray-700 hover:text-gray-900"
-              >
-                마이페이지
-              </a>
+              {
+                loggedIn ? (
+                  <a
+                    href="/product/createProduct"
+                    className="py-5 px-3 text-gray-700 hover:text-gray-900"
+                  >
+                    상품등록
+                  </a>
+                ) : ""
+              }
+              
             </div>
           </div>
           {/* secondary nav */}
-          
           {loggedIn ? 
-          
             (
               <div className="hidden md:flex items-center space-x-1">
                 <a href="/cart" className="py-5 px-3">
                   장바구니
                 </a>
                 ({user?.email})
+                <a
+                  href="/profile"
+                  className="py-5 px-3 text-gray-700 hover:text-gray-900"
+                >
+                  마이페이지
+                </a>
                 <button className="py-5 px-3" onClick={signOut}>
                   로그아웃
                 </button>
@@ -69,21 +72,17 @@ const Navbar = () => {
                 <a href="/cart" className="py-5 px-3">
                   장바구니
                 </a>
-                <a href="/auth" className="py-5 px-3">
-                  로그인
-                </a>
                 <a
                   href="/auth"
                   className="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
                 >
-                  회원가입
+                  로그인
                 </a>
               </div>
             )
           }
-          {/* <a href="/auth" className="py-5 px-3">
-              장바구니
-          </a> */}
+
+
           {/* mobile menu */}
           <div className="md:hidden flex items-center">
             <button onClick={() => setMenuToggle(!menuToggle)}>
@@ -99,9 +98,9 @@ const Navbar = () => {
 
       {/* mobile menu items */}
       <div className={`${!menuToggle ? "hidden" : ""} md:hidden`}>
-        <a href="/gallery" className="block py-2 px-4 text-sm hover:bg-gray-200">
+        {/* <a href="/gallery" className="block py-2 px-4 text-sm hover:bg-gray-200">
           갤러리
-        </a>
+        </a> */}
         <a href="/product/productList" className="block py-2 px-4 text-sm hover:bg-gray-200">
           상품목록
         </a>
@@ -130,17 +129,17 @@ const Navbar = () => {
           </button>
         ) : (
           <div>
+            {/* <a
+              href="/auth"
+              className="block py-2 px-4 text-sm hover:bg-gray-200"
+            >
+              로그인
+            </a> */}
             <a
               href="/auth"
               className="block py-2 px-4 text-sm hover:bg-gray-200"
             >
               로그인
-            </a>
-            <a
-              href="/auth"
-              className="block py-2 px-4 text-sm hover:bg-gray-200"
-            >
-              회원가입
             </a>
           </div>
         )}

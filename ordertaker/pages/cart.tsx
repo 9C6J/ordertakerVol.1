@@ -7,7 +7,7 @@ import Order  from "../components/Order";
 
 import { useSetRecoilState, useRecoilValue ,useResetRecoilState } from 'recoil';
 import { contentState } from '../recoil/state';
-import { useFormFields, _getJsonCookie } from "../lib/utils";
+import { cn, useFormFields, _getJsonCookie } from "../lib/utils";
 import Router from "next/router";
 
 
@@ -270,11 +270,19 @@ function Cart(){
                       </div>
                       {
                         cartList.length? 
+
                           <button  
-                            className="text-base leading-none w-full py-5 bg-gray-800 border-gray-800 border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-white dark:hover:bg-gray-700"
+                            className={cn(
+                              `text-base leading-none w-full py-5 border focus:outline-none 
+                              focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-white 
+                              dark:hover:bg-gray-700 rounded transition duration-300`,
+                              orderBtn
+                                ? 'bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800'
+                                : 'bg-gray-800 border-gray-800'
+                            )}
                             onClick={(e)=>{ !orderBtn ? onHomeClick() : handleMap(e,'order', '')}}
                           >
-                            주문하기
+                            {orderBtn ? '주문하기' : '주문서작성하기'}
                           </button>
                           : 
                           <button  
