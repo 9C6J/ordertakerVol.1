@@ -170,7 +170,7 @@ const DetailProduct = ({product} : {product : Product}) => {
   //   console.error(e);
   //   // 에러처리
   // }
-  // Router.push("/product/productList");
+  // Router.push("/product");
 
   // location.reload();
   // resetFormFields();
@@ -282,7 +282,7 @@ const DetailProduct = ({product} : {product : Product}) => {
           <button
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="button"
-            onClick={()=>{Router.push("/product/productList")}}
+            onClick={()=>{Router.push("/product")}}
           >
             목록으로
           </button>

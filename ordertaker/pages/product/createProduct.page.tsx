@@ -127,7 +127,7 @@ export default function CreateProduct(){
       if(error){
         console.log(error)
       }else{
-        Router.push("/product/productList");
+        Router.push("/product");
       }
 
   };
