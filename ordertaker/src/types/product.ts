@@ -1,14 +1,13 @@
-// index.page
-// type Product = {
-//     id: number;
-//     created_at: string;
-//     title: string;
-//     imageSrc : string;
-//     price : number;
-//     content : string;
-//     quantity : number;
-//     order_qunatity_limit : number;
-//   };
+export type Product = {
+    id: number;
+    created_at: string;
+    title: string;
+    imageSrc : string;
+    price : number;
+    content : string;
+    quantity : number;
+    order_qunatity_limit : number;
+  };
 
 
 // createProduct.page
