@@ -1,0 +1,22 @@
+MessageContext를 사용하는 방법
+
+ex ) 
+import { useContext } from 'react';
+
+import { MessageContext } from '~/lib/message/MessageContext.tsx';
+
+const { messages, handleMessage } = useContext(MessageContext);
+
+위와 같이 리액트의 useContext를 이용해서 해당 Context의 messages와 handleMessage를 디스트럭쳐 링 방식으로 불러오면 됩니다.
+
+근데 매번 useContext를 이용하기가 번거롭죠?
+
+그래서 useMessage란 리액트 훅을 만듦
+
+useMessage
+
+ex) 
+
+import { useMessage } from "../lib/message";
+
+const { messages, handleMessage } = useMessage();
