@@ -63,3 +63,10 @@ export function _isNotNumber(value : string){
 
     return regExp.test(value);
 }
+
+
+// 파일 이름에 한글이 포함되어 있는지 확인
+export const checkFileForKorean = (fileName: string): boolean => {
+    const CheckRegExpKorean: RegExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+    return CheckRegExpKorean.test(fileName);
+  };

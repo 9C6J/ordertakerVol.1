@@ -15,7 +15,7 @@ export default function ProductItem(
     <Link href={props.linkOption? `/product/${props.product.id}` : ''} className="font-bold text-blue-500">
       <div className="group aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
           <BlurImage
-            imageSrc={props.product.imageSrc}
+            imageSrc={props.product.imageSrc||''}
             width={props.width ? props.width : 500}
             height={props.height ? props.height : 500}
           />

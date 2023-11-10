@@ -1,11 +1,11 @@
 
 export type Product = {
-    id: number;
+    id?: number;
     title: string;
     price : number;
-    imageSrc : string;
-    size: number;
-    created_at: string;
+    imageSrc : string | null;
+    size: number | null;
+    created_at?: string | null;
     content : string;
     order_qunatity_limit : number;
   };

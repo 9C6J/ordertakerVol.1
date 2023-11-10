@@ -3,100 +3,87 @@ import React, {  useRef, useState, useEffect, ReactHTML} from "react";
 import { supabase } from '../../src/api/supabase';
 import Image from 'next/image'
 import { useFormFields } from "~/utils/utils";
+import { Product } from '~/types/product';
 import Router from "next/router";
+import { checkFileForKorean, uploadImageToStorage } from '~/utils/imageUtils'; // 추가된 부분
+
 
 // const MAX_COUNT = 1;
 
-// 상품
-type Product = {
-  // id : String;// 상품번호 
-  title : string;// 상품제목 
-  price : number;// 상품가격 
-  imageSrc : string | null;// 상품이미지 
-  size : number | null;// 상품사이즈
-  order_qunatity_limit : number;// 1회구매시 최대수량 
-  content : string;// 상품설명 
-};
-
 // 상품 초기화
 const PRODUCT_FORM_VALUES: Product = {
-  title : "",
-  price : 0,
-  imageSrc : null,
-  size : null,
-  order_qunatity_limit : 10,
-  content : "",
+  title: "",
+  price: 0,
+  imageSrc: null,
+  size: null,
+  content: "",
+  order_qunatity_limit: 10,
 };
 
 export default function CreateProduct(){
-
   const [values, handleChange, resetFormFields] = useFormFields<Product>(PRODUCT_FORM_VALUES);
-
-  const [uploadedFiles, setUploadedFiles] = useState<File|any|null>('');
-  const [imgFile, setImgFile] = useState<ArrayBuffer|String|null>('');
-  const [fileLimit, setFileLimit] = useState(false);
-
-  const firstFocusInput  = useRef<HTMLInputElement|any>(null);
-
-  const handleUploadFiles = (file:File[]) => {
-    // const uploaded = [...uploadedFiles];
-    // const images = [...imgFile];
+  const [uploadedFiles, setUploadedFiles] = useState<File | null>(null);
+  const [imgFile, setImgFile] = useState<string | null>('');
+  const firstFocusInput = useRef<HTMLInputElement | null>(null);
+  // const [fileLimit, setFileLimit] = useState(false);
+  
+  const handleUploadFiles = (file: File[]) => {
     const reader = new FileReader();
 
-    let limitExceeded = false;
-    // files.some((file) =>{
-    //   if(uploaded.findIndex((f)=> f.name === file.name) === -1 ){
-    //     // uploaded.push(file);
-    //     uploaded[0] = file;
-
-    //     reader.readAsDataURL(file);
-
-    //     // if(uploaded.length === MAX_COUNT ) setFileLimit(true);
-    //     // if(uploaded.length > MAX_COUNT){
-    //     //   alert(`업로드 가능한 최대 파일 갯수는 ${MAX_COUNT}개 입니다.`);
-    //     //   setFileLimit(false);
-    //     //   limitExceeded = true;
-    //     //   return true;
-    //     // }
-    //   }
-    // });
-
-    if(file?.length){
+    if (file?.length) {
       reader.readAsDataURL(file[0]);
     }
 
-    // if(!limitExceeded){
-      setUploadedFiles(file[0])
-      reader.onloadend = () => {
-        // images.push(reader.result);
-        setImgFile(reader.result)
-        // console.log("e",images)
-      }
-    // };
+    setUploadedFiles(file[0]);
+
+    reader.onloadend = () => {
+      setImgFile(reader.result as string);
+    };
   }
 
-  const handleUpload = async(e:any) => {
-    let files:any;
-    
-    if (e.target.files) {
-      files = Array.prototype.slice.call(e.target.files);
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
 
-      const CheckRegExpKorean: RegExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-      if(CheckRegExpKorean.test(files[0]?.name)){
-        alert(`상품이미지 파일이름을 한글이 포함되어있습니다. \n변경후 다시 시도해주세요.`)
+    if (files.length > 0) {
+      const file = files[0];
+
+      if (checkFileForKorean(file?.name || '')) {
+        alert(`상품이미지 파일 이름에 한글이 포함되어 있습니다. \n변경 후 다시 시도해주세요.`);
         return;
       }
 
       handleUploadFiles(files);
       handleChange(e);
     }
-
   }
-  
-  useEffect(()=>{
-    firstFocusInput.current.focus();
-  },[]);
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const insertValue = { ...values };
+
+    if (!uploadedFiles?.name) {
+      confirm(`이미지 없이 등록할까요? 상품관리메뉴에서 등록 가능합니다.`);
+    } else {
+      const imageUrl = await uploadImageToStorage(uploadedFiles);
+
+      if (imageUrl) {
+        insertValue.imageSrc = imageUrl;
+
+        // 상품 등록
+        const { error } = await supabase.from('product').insert(insertValue);
+
+        if (error) {
+          console.log(error)
+        } else {
+          Router.push("/product");
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    firstFocusInput?.current?.focus();
+  }, []);
 
   // 상품등록
   const handleSumbit = async (event : any) => {
