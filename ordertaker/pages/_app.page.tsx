@@ -2,7 +2,7 @@ import React from "react";
 import type { AppProps } from 'next/app'
 import Head from "next/head";
 import '~/styles/globals.css';
-import Layout from "../src/layouts/Layout"; 
+import Layout from "./src/root/main-layout"; 
 import { MessageProvider } from "../src/common/message";
 import { AuthProvider } from "../src/common/auth";
 import { RecoilRoot } from 'recoil';

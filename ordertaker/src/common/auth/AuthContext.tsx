@@ -1,5 +1,5 @@
 import { createContext, FunctionComponent, useEffect, useState } from "react";
-import { supabase } from "../../../pages/api/supabase";
+import { supabase } from "../../api/supabase";
 import { AuthUser, AuthChangeEvent,Session} from "@supabase/supabase-js";
 import { useMessage, MessageProps } from "../message";
 import { SupabaseAuthPayload, SupabaseChangePasswordPayload, SupabaseRecoveryPasswordPayload } from "./auth.types";

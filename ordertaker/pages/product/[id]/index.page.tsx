@@ -1,7 +1,7 @@
 // /product/[id].tsx
 
 import Image from 'next/image';
-import { supabase } from '../../api/supabase';
+import { supabase } from '../../../src/api/supabase';
 import React, { useState, useEffect} from "react";
 import Router from "next/router";
 import {getCookies, getCookie, setCookie, hasCookie, removeCookies} from 'cookies-next';

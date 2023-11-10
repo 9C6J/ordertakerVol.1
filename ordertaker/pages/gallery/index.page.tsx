@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from "react";
 
-import { supabase } from '../api/supabase';
+import { supabase } from '../../src/api/supabase';
 import Image from 'next/image'
 import orange from "../public/orange.jpeg";
 import cat from "../public/cat.png";

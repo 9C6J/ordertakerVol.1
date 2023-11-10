@@ -1,52 +1,30 @@
-import React, { useState, useEffect} from "react";
+import { GetServerSideProps } from 'next';
+import ProductList from './src/ui/ProductList';
+import { Product } from '~/types/product';
+import { supabase } from '~/api/supabase';
 
-import { supabase } from '../api/supabase';
-import Image from 'next/image'
+const ProductPage = ({ products }: { products: Product[] }) => {
+  return <ProductList products={products} />;
+};
 
-import { cn } from "~/utils/utils";
-import ProductItem from "./ProductItem";
-
-// 서버로부터 완전하게 만들어진 html파일을 받아와 페이지 전체를 렌더링 하는 방식
-// 남용시 서버에 부담을 줄 수 있다.
-export const getServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const { data: products, error } = await supabase.from('product').select('*');
 
-  if(error){
+  if (error) {
     console.error(error);
     return {
       redirect: {
-          destination: '/',
-          statusCode: 307
-      }
-    }
-  }else{
+        destination: '/',
+        statusCode: 307,
+      },
+    };
+  } else {
     return {
       props: {
-        products
-      }
+        products,
+      },
     };
   }
-}
-
-type Product = {
-  id: number;
-  created_at: string;
-  title: string;
-  imageSrc : string;
-  price : number;
 };
 
-// const Gallery = (props : Image|Image[]) => {
-function ProductList({products} : { products : Product[]}){
-    return (
-    <div className="container px-5 py-10 mx-auto w-2/3">
-      <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-        {products?.map((product) => (
-            <ProductItem key={product.id} product={product} linkOption={true} />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default ProductList;
+export default ProductPage;

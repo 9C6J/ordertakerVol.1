@@ -1,6 +1,6 @@
 import React, {  useRef, useState, useEffect, ReactHTML} from "react";
 
-import { supabase } from '../api/supabase';
+import { supabase } from '../../src/api/supabase';
 import Image from 'next/image'
 import { useFormFields } from "~/utils/utils";
 import Router from "next/router";

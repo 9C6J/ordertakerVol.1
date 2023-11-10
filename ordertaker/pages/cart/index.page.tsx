@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef} from "react";
-import { supabase } from '../api/supabase';
+import { supabase } from '../../src/api/supabase';
 import {getCookies, getCookie , setCookie, hasCookie, removeCookies, CookieValueTypes} from 'cookies-next';
-import ProductItem  from "../product/ProductItem";
+import ProductItem  from "../product/src/ui/ProductItem";
 import CartItem  from "./CartItem";
 import Order  from "./Order";
 

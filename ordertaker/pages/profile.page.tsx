@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useAuth } from "../src/common/auth";
 import Router from "next/router";
-import { supabase } from './api/supabase';
+import { supabase } from '../src/api/supabase';
 import { User } from "@supabase/supabase-js";
 
 import classNames from "classnames";
