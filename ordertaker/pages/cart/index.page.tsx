@@ -14,6 +14,7 @@ import { CartItem as CartItemType , CartCookie, CartCookies } from "~/types/cart
 import { PurchaseOrder } from "~/types/order";
 import { cn, useFormFields, _getJsonCookie } from "~/utils/utils";
 import Router from "next/router";
+import { PostgrestResponse, PostgrestSingleResponse } from "@supabase/supabase-js";
 
 interface CartProps {}
 
@@ -116,10 +117,24 @@ function Cart({}: CartProps) {
 
     const oOrderValues = { ...orderValues };
     oOrderValues.total_price = order.total_price;
-
     try {
-      const { data } = await supabase.from('order').insert(oOrderValues).select();
-      const orderId = data[0].id;
+      // const { data } = await supabase.from('order').insert(oOrderValues).select('id');
+
+      // const orderId = data[0].id;
+
+      const { data, error }: PostgrestResponse<OrderData> = await supabase.from('order').insert(oOrderValues).select('id');
+
+      if (error) {
+        console.error('Error inserting order:', error);
+        return;
+      }
+      const orderId = data?.[0]?.id;
+
+      // OrderData는 데이터의 스키마에 맞게 타입을 정의해야 합니다.
+      // 예를 들어, Order 테이블이 id 열만을 갖고 있다면 다음과 같이 정의할 수 있습니다.
+      type OrderData = {
+        id: string;
+      };
 
       await Promise.all(
         cartList.map(async (oRow) => {
@@ -148,9 +163,10 @@ function Cart({}: CartProps) {
       detail: () => Router.push(`/product/${key}`),
       order: () => {
         const btnOrderSubmit = document.querySelector<HTMLButtonElement>('#btnOrderSubmit');
-        btnOrderSubmit?.dispatchEvent(new Event('click'));
+        // btnOrderSubmit?.dispatchEvent(new Event('click'));
+        btnOrderSubmit?.click();
       },
-      orderSubmit: () => handleOrderSubmit(e, orderValues),
+      orderSubmit: () =>{ handleOrderSubmit(e, orderValues)},
     };
 
     handlers[type]();
@@ -214,7 +230,7 @@ function Cart({}: CartProps) {
                           ? 'bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800'
                           : 'bg-gray-800 border-gray-800'
                       )}
-                      onClick={(e) => {
+                      onClick={(e:any) => {
                         !orderBtn ? onHomeClick() : handleMap(e, 'order', '');
                       }}
                     >
