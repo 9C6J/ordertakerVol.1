@@ -4,6 +4,14 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
+export type CartCookie = {
+  product_id: string;
+  quantity: number;
+};
+
+export type CartCookies = CartCookie[];
+
+
 // createProduct.page
   // type Product = {
   //   id : String;// 상품번호 
