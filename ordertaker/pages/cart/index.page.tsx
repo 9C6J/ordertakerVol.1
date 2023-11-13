@@ -118,10 +118,10 @@ function Cart({}: CartProps) {
     const oOrderValues = { ...orderValues };
     oOrderValues.total_price = order.total_price;
     try {
-      // const { data } = await supabase.from('order').insert(oOrderValues).select('id');
-
-      // const orderId = data[0].id;
-
+      type OrderData = {
+        id: string;
+      };
+      
       const { data, error }: PostgrestResponse<OrderData> = await supabase.from('order').insert(oOrderValues).select('id');
 
       if (error) {
@@ -129,12 +129,6 @@ function Cart({}: CartProps) {
         return;
       }
       const orderId = data?.[0]?.id;
-
-      // OrderData는 데이터의 스키마에 맞게 타입을 정의해야 합니다.
-      // 예를 들어, Order 테이블이 id 열만을 갖고 있다면 다음과 같이 정의할 수 있습니다.
-      type OrderData = {
-        id: string;
-      };
 
       await Promise.all(
         cartList.map(async (oRow) => {

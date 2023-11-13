@@ -4,18 +4,6 @@ import { _getJsonCookie } from "~/utils/utils";
 import Numericinput from "~/common/Numericinput";
 import {CartItem as CartItemType} from "~/types/cart";
 
-
-// type Product = {
-//   id: string;
-//   quantity : number;
-//   created_at: string;
-//   title: string;
-//   imageSrc : string;
-//   price : number;
-//   content : string;
-//   order_qunatity_limit : number;
-// };
-
 export default function CartItem(
   props : {
     product : CartItemType,
