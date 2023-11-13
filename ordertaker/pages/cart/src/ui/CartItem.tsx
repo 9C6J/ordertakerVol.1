@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import BlurImage from "~/common/BlurImage";
 import { _getJsonCookie } from "~/utils/utils";
 import Numericinput from "~/common/Numericinput";
-import {CartItem} from "~/types/cart";
+import {CartItem as CartItemType} from "~/types/cart";
 
 
 // type Product = {
@@ -18,7 +18,7 @@ import {CartItem} from "~/types/cart";
 
 export default function CartItem(
   props : {
-    product : CartItem,
+    product : CartItemType,
     width? : number,
     height? : number,
     linkOption? : Boolean|null,
@@ -27,20 +27,19 @@ export default function CartItem(
   ) {
 
   return (
-    // 여기까지 a태그
     <div className="md:flex items-strech py-8 md:py-10 lg:py-8 border-t border-gray-50">
       <div className="md:w-4/12 2xl:w-1/4 w-full">
         {/* 웹 */}
         {/* <img src={props.product.imageSrc} alt="Black Leather Bag" className="h-full object-center object-cover md:block hidden" /> */}
         <BlurImage
-            imageSrc={props.product.imageSrc?}
+            imageSrc={props.product.imageSrc}
             width={500}
             height={500}
             className="h-full object-center object-cover md:block hidden"
           />
         {/* 모바일 */}
         <BlurImage
-            imageSrc={props.product.imageSrc?}
+            imageSrc={props.product.imageSrc}
             width={1000}
             height={500}
             className="md:hidden w-full h-full object-center object-cover"

@@ -4,7 +4,7 @@ import { cn } from "~/utils/utils";
 
 export default function BlurImage(
   props : {
-    imageSrc : string,
+    imageSrc : string | null,
     width : number,
     height : number,
     className? : string,
