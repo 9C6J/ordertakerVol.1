@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef} from "react";
 import { supabase } from '../../src/api/supabase';
 import {getCookies, getCookie , setCookie, hasCookie, removeCookies, CookieValueTypes} from 'cookies-next';
 import ProductItem  from "../product/src/ui/ProductItem";
-import CartItem  from "./CartItem";
+import CartItem  from "./src/ui/CartItem";
 import Order  from "./Order";
 
 // import { useSetRecoilState, useRecoilValue ,useResetRecoilState } from 'recoil';
@@ -10,7 +10,8 @@ import Order  from "./Order";
 import { cn, useFormFields, _getJsonCookie } from "~/utils/utils";
 import Router from "next/router";
 
-
+import { CartItem as CartItemType } from "~/types/cart";
+import { PurchaseOrder } from "~/types/order";
 
 // export const getServerSideProps = async () => {
 //   const { data: products } = await supabase.from('product').select('*');
@@ -27,34 +28,23 @@ type ProductCookie = {
   product_id: string;
   quantity : number;
 };
-// 상품
-type Product = {
-  id: string;
-  quantity : number;
-  created_at: string;
-  title: string;
-  imageSrc : string;
-  price : number;
-  content : string;
-  order_qunatity_limit : number;
-}
 
 
 // 주문
-type PurchaseOrder = {
-  // id: string;
-  customer_id: string | null
-  // order_at: Date;
-  ,total_price: number // 주문총금액
-  ,address: string    // 받을주소
-  ,payment_method: string // 주문방법
-  ,status: string // 주문상태
-  ,purchaser_name : string // 구매자이름
-  ,recipient_name : string // 수령인이름
-  ,purchaser_phoneNumber : string // 구매자연락처
-  ,recipient_phoneNumber : string // 수령인연락처
-  ,order_request : string // 배송요청사항
-}
+// type PurchaseOrder = {
+//   // id: string;
+//   customer_id: string | null
+//   // order_at: Date;
+//   ,total_price: number // 주문총금액
+//   ,address: string    // 받을주소
+//   ,payment_method: string // 주문방법
+//   ,status: string // 주문상태
+//   ,purchaser_name : string // 구매자이름
+//   ,recipient_name : string // 수령인이름
+//   ,purchaser_phoneNumber : string // 구매자연락처
+//   ,recipient_phoneNumber : string // 수령인연락처
+//   ,order_request : string // 배송요청사항
+// }
 
 
 // 주문서 초기화
@@ -90,22 +80,22 @@ const PURCHASE_FORM_VALUES: PurchaseOrder = {
 };
 
 // 주문상세
-type PurchaseOrderDetail = {
-  id: string,
-  size: string,
-  price: string,
-  order_id: string,
-  product_id: string,
-  quantity: string,
-}
+// type PurchaseOrderDetail = {
+//   id: string,
+//   size: string,
+//   price: string,
+//   order_id: string,
+//   product_id: string,
+//   quantity: string,
+// }
 
 function Cart(){
   // 쿠키
   // const [cartCookie, setCartCookie] = useState<ProductCookie[]>([]);  
   // 상품
-  const [product, setProduct] = useState<Product[]>([]);
+  const [product, setProduct] = useState<CartItemType[]>([]);
   // 장바구니리스트
-  const [cartList, setCartList] = useState<Product[]>([]);
+  const [cartList, setCartList] = useState<CartItemType[]>([]);
   // 주문서
   const [orderBtn, setOrderBtn] = useState(false);
   const [order, setOrder] = useState<PurchaseOrder>(PURCHASE_FORM_VALUES);   
@@ -162,7 +152,7 @@ function Cart(){
     const cookie = _getJsonCookie("cart");
 
     product && 
-    setCartList(cookie.map((o: { product_id: string; })=>{
+    setCartList(cookie.map((o: { product_id: number; })=>{
       return Object.assign({}, o, product.filter((r)=>{return o.product_id == r.id})[0]); 
     })) 
   }
@@ -276,7 +266,7 @@ function Cart(){
                   <p className="lg:text-4xl text-3xl font-black leading-10 text-gray-800 dark:text-white pt-3">장바구니</p>
                   {
                     cartList.length ?
-                    cartList.map((product: Product, idx) => (
+                    cartList.map((product: CartItemType, idx) => (
                         <CartItem key={idx} product={product} linkOption={false} handleMap={handleMap}/>
                     )) 
                     : <p> 담긴 상품이 없습니다. </p>

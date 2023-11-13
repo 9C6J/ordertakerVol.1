@@ -1,12 +1,11 @@
-import React, {  useRef, useState, useEffect, ReactHTML} from "react";
+import React, {  useRef, useState, useEffect} from "react";
 
-import { supabase } from '../../src/api/supabase';
+import { supabase } from '~/api/supabase';
 import Image from 'next/image'
 import { useFormFields } from "~/utils/utils";
 import { Product } from '~/types/product';
 import Router from "next/router";
 import { checkFileForKorean, uploadImageToStorage } from '~/utils/imageUtils'; // 추가된 부분
-
 
 // const MAX_COUNT = 1;
 

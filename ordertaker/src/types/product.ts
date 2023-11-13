@@ -10,7 +10,6 @@ export type Product = {
     order_qunatity_limit : number;
   };
 
-
 // createProduct.page
   // type Product = {
   //   id : String;// 상품번호 
