@@ -7,7 +7,7 @@ import { supabase } from '../src/api/supabase';
 import { User } from "@supabase/supabase-js";
 
 import classNames from "classnames";
-import { useFormFields } from "~/utils/utils";
+import { toParsingLocalDate, useFormFields } from "~/utils/utils";
 import { useMessage } from "../src/common/message";
 
 
@@ -118,9 +118,7 @@ const ProfilePage = ({  }) => {
     setChangePassword(!changePassword);
   }
 
-  const toParsingLocalDate : Function = (date: string) => {
-    return new Date(date).toLocaleString();
-  }
+  
 
   return (
     <div className="flex flex-col items-center justify-start py-36 min-h-screen">

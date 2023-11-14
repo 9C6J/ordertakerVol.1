@@ -70,3 +70,8 @@ export const checkFileForKorean = (fileName: string): boolean => {
     const CheckRegExpKorean: RegExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
     return CheckRegExpKorean.test(fileName);
   };
+
+  
+export const toParsingLocalDate : Function = (date: string) => {
+    return new Date(date).toLocaleString();
+  }

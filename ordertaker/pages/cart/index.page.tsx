@@ -20,7 +20,7 @@ interface CartProps {}
 
 function Cart({}: CartProps) {
   const PURCHASE_FORM_VALUES: PurchaseOrder = {
-    // id: string;
+    // id: null;
     customer_id: "test",
     // order_at: Date;
     total_price: 0,
@@ -135,6 +135,7 @@ function Cart({}: CartProps) {
           await supabase.from('orderDetail').insert({
             size: null,
             price: oRow.price,
+            title: oRow.title,
             order_id: orderId,
             product_id: oRow.id,
             quantity: oRow.quantity,

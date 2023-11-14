@@ -28,7 +28,7 @@ const Navbar = () => {
                 상품목록
               </a>
               <a
-                href="/product"
+                href="/customer"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
                 주문조회
