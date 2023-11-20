@@ -1,3 +1,4 @@
+// 구매페이지
 import React, { useState, useEffect, useRef, ChangeEvent, FormEvent } from "react";
 import { supabase } from '../../src/api/supabase';
 import {
@@ -10,8 +11,8 @@ import {
 } from 'cookies-next';
 import OriginalCartItem from "./src/ui/CartItem";
 import OrderComponent from "./src/ui/Order";
-import { CartItem as CartItemType , CartCookie, CartCookies } from "~/types/cart";
-import { PurchaseOrder } from "~/types/order";
+import { CartItem as CartItemType , CartCookie, CartCookies } from "~/types/purchase";
+import { Purchase } from "~/types/purchase";
 import { cn, useFormFields, _getJsonCookie } from "~/utils/utils";
 import Router from "next/router";
 import { PostgrestResponse, PostgrestSingleResponse } from "@supabase/supabase-js";
@@ -19,7 +20,7 @@ import { PostgrestResponse, PostgrestSingleResponse } from "@supabase/supabase-j
 interface CartProps {}
 
 function Cart({}: CartProps) {
-  const PURCHASE_FORM_VALUES: PurchaseOrder = {
+  const PURCHASE_FORM_VALUES: Purchase = {
     // id: null;
     customer_id: "test",
     // order_at: Date;
@@ -37,8 +38,8 @@ function Cart({}: CartProps) {
   const [product, setProduct] = useState<CartItemType[]>([]);
   const [cartList, setCartList] = useState<CartItemType[]>([]);
   const [orderBtn, setOrderBtn] = useState<boolean>(false);
-  const [order, setOrder] = useState<PurchaseOrder>(PURCHASE_FORM_VALUES);
-  const [orderValues, handleChange, resetFormFields] = useFormFields<PurchaseOrder>(
+  const [order, setOrder] = useState<Purchase>(PURCHASE_FORM_VALUES);
+  const [orderValues, handleChange, resetFormFields] = useFormFields<Purchase>(
     PURCHASE_FORM_VALUES
   );
 
@@ -67,7 +68,7 @@ function Cart({}: CartProps) {
 
   useEffect(() => {
     let sum = 0;
-    let oOrder: PurchaseOrder = { ...order };
+    let oOrder: Purchase = { ...order };
 
     // 총주문금액
     cartList.forEach((o) => {
@@ -112,7 +113,7 @@ function Cart({}: CartProps) {
     onSetCartList();
   };
 
-  const handleOrderSubmit = async (e: FormEvent, orderValues: PurchaseOrder) => {
+  const handleOrderSubmit = async (e: FormEvent, orderValues: Purchase) => {
     e.preventDefault();
 
     const oOrderValues = { ...orderValues };

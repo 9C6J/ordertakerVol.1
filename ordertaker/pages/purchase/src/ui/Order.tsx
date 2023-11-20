@@ -1,9 +1,9 @@
 import React, { forwardRef, useEffect } from "react";
-import { PurchaseOrder } from "~/types/order";
+import { Purchase } from "~/types/purchase";
 
 export default React.forwardRef((
   props : {
-    orderValues : PurchaseOrder
+    orderValues : Purchase
     handleMap? : any
     handleChange? : any
   },

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import BlurImage from "~/common/BlurImage";
 import { _getJsonCookie } from "~/utils/utils";
 import Numericinput from "~/common/Numericinput";
-import {CartItem as CartItemType} from "~/types/cart";
+import {CartItem as CartItemType} from "~/types/purchase";
 
 export default function CartItem(
   props : {

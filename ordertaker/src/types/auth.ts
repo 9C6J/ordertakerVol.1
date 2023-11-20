@@ -10,7 +10,7 @@ export type RecoveryFormFieldProps = {
   };
 
 // 주문조회
-export type OrderInquiryFormFieldProps = {
+export type HistoryFormFieldProps = {
     purchaser_name: string,
     purchaser_phoneNumber: string,
   };

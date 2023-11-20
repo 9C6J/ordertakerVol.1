@@ -28,7 +28,7 @@ const Navbar = () => {
                 상품목록
               </a>
               <a
-                href="/customer"
+                href="/purchase/history"
                 className="py-5 px-3 text-gray-700 hover:text-gray-900"
               >
                 주문조회
@@ -50,7 +50,7 @@ const Navbar = () => {
           {loggedIn ? 
             (
               <div className="hidden md:flex items-center space-x-1">
-                <a href="/cart" className="py-5 px-3">
+                <a href="/purchase" className="py-5 px-3">
                   장바구니
                 </a>
                 ({user?.email})
@@ -67,7 +67,7 @@ const Navbar = () => {
             ) : 
             (
               <div className="hidden md:flex items-center space-x-1">
-                <a href="/cart" className="py-5 px-3">
+                <a href="/purchase" className="py-5 px-3">
                   장바구니
                 </a>
                 <a
@@ -79,7 +79,6 @@ const Navbar = () => {
               </div>
             )
           }
-
 
           {/* mobile menu */}
           <div className="md:hidden flex items-center">
@@ -103,7 +102,7 @@ const Navbar = () => {
           상품등록
         </a>
         <a
-          href="/cart"
+          href="/purchase"
           className="block py-2 px-4 text-sm hover:bg-gray-200"
         >
           장바구니
