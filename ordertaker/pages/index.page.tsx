@@ -9,6 +9,7 @@ import Orange from '~/components/Orange';
 import {Props} from "~/types/common";
 
 const Home: NextPage = () => {
+
   return (
     <MainLayout>
       <Head>

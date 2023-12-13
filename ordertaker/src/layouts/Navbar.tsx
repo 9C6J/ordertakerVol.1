@@ -45,7 +45,7 @@ const Navbar = () => {
                     </a>
 
                     <a
-                      href="/product/createProduct"
+                      href="/admin/createProduct"
                       className="py-5 px-3 text-gray-700 hover:text-gray-900"
                     >
                       상품등록
@@ -115,7 +115,7 @@ const Navbar = () => {
         {
           loggedIn ? (
             <>
-              <a href="/product/createProduct" className="block py-2 px-4 text-sm hover:bg-gray-200">
+              <a href="/admin/createProduct" className="block py-2 px-4 text-sm hover:bg-gray-200">
                 상품등록
               </a>
               <a href="/admin/purchaseHistory" className="block py-2 px-4 text-sm hover:bg-gray-200">

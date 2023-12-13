@@ -56,7 +56,6 @@ const DetailProduct = ({product} : {product : Product}) => {
     let cart: CartCookies = [];
     const sProductId = product.id;
 
-    debugger;
     if(hasCookie('cart')){
       const cartCookie = getCookie("cart");
 
@@ -94,14 +93,38 @@ const DetailProduct = ({product} : {product : Product}) => {
 
   // 주문
   const onSumbit  = async (event:React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
+    let cart: CartCookies = [];
+    const sProductId = product.id;
 
-  // const buttonValue = (event.target as HTMLButtonElement).activeElement?.getAttribute('value');
-  alert("주문");
+    if(hasCookie('cart')){
+      const cartCookie = getCookie("cart");
 
-  const {data, error} = await supabase.from('order').insert(product);
+      if(typeof cartCookie === 'string'){
 
-};
+        if(cartCookie.indexOf(`"product_id":${sProductId}`) > -1){
+          moveToCart(true)
+        }else{
+          let aCartCookie = JSON.parse(cartCookie) ;
+          
+          if(Array.isArray(aCartCookie)){
+            aCartCookie.push({product_id : product.id, quantity})
+          }else{
+            aCartCookie = [cart];
+            aCartCookie.push({product_id : product.id, quantity})
+          }
+
+          setCookie('cart',JSON.stringify(aCartCookie), {maxAge:30000});
+          moveToCart(true);
+        }
+      }
+      
+    }else{
+      cart.push({product_id : Number(product.id), quantity});
+      setCookie('cart',JSON.stringify(cart),{maxAge:30000});
+      moveToCart(true);
+    }
+
+  };
 
   return (
       <form 
@@ -189,28 +212,25 @@ const DetailProduct = ({product} : {product : Product}) => {
           
         <div className="flex gap-2">
           <button
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="button"
             onClick={handleAddCart}
           >
-            장바구니담기
+            장바구니
           </button>
-        </div>
-        <div className="flex gap-2">
           <button
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
+            onClick={handleAddCart}
           >
-            주문하기
+            주문
           </button>
-        </div>
-        <div className="flex gap-2">
           <button
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="button"
             onClick={()=>{Router.push("/product")}}
           >
-            목록으로
+            뒤로가기
           </button>
         </div>
 
