@@ -17,9 +17,9 @@ import { cn, useFormFields, _getJsonCookie } from "~/utils/utils";
 import Router from "next/router";
 import { PostgrestResponse, PostgrestSingleResponse } from "@supabase/supabase-js";
 
-interface CartProps {}
+function Purchase() {
 
-function Cart({}: CartProps) {
+  // 주문양식
   const PURCHASE_FORM_VALUES: Purchase = {
     // id: null;
     customer_id: "test",
@@ -34,15 +34,13 @@ function Cart({}: CartProps) {
     recipient_phoneNumber: "01023452345",
     order_request: "요청사항입니다",
   };
+  
+  const [order, setOrder] = useState<Purchase>(PURCHASE_FORM_VALUES);
+  const [orderForm, handleChange, resetFormFields] = useFormFields<Purchase>(PURCHASE_FORM_VALUES);
 
   const [product, setProduct] = useState<CartItemType[]>([]);
-  const [cartList, setCartList] = useState<CartItemType[]>([]);
+  const [cart, setCart] = useState<CartItemType[]>([]);
   const [orderBtn, setOrderBtn] = useState<boolean>(false);
-  const [order, setOrder] = useState<Purchase>(PURCHASE_FORM_VALUES);
-  const [orderValues, handleChange, resetFormFields] = useFormFields<Purchase>(
-    PURCHASE_FORM_VALUES
-  );
-
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -50,13 +48,13 @@ function Cart({}: CartProps) {
       const cookie: CartCookies = _getJsonCookie("cart");
 
       if (cookie.length) {
-        const aProductId: Array<string> = [...cookie].map((o) => o.product_id);
-        const { data, error } = await supabase.from("product")
-          .select()
-          .in('id', aProductId);
+        const aProductId: Array<number> = [...cookie].map((o) => o.product_id);
+        const { data, error } = await supabase.from("product").select().in('id', aProductId);
 
+        if(data){
+          setProduct(data);
+        }
         error && console.error("error=>", error);
-        data && setProduct(data);
       }
     }
     fetchAndSetProduct();
@@ -66,30 +64,28 @@ function Cart({}: CartProps) {
     onSetCartList();
   }, [product]);
 
-  useEffect(() => {
-    let sum = 0;
-    let oOrder: Purchase = { ...order };
-
-    // 총주문금액
-    cartList.forEach((o) => {
-      sum += o.quantity * o.price;
-    });
-    oOrder.total_price = sum;
-    setOrder(oOrder);
-  }, [cartList]);
-
   function onSetCartList() {
     const cookie = _getJsonCookie("cart");
 
-    product &&
-      setCartList(
-        cookie.map((o: { product_id: number }) => {
-          return Object.assign({}, o, product.find((r) => o.product_id == r.id));
-        })
-      );
+    if(product.length){
+      const cookies = cookie.map((o: { product_id: number }) => {
+        return Object.assign({}, o, product.find((r) => o.product_id == r.id));
+      })
+
+      setCart(cookies);
+    }
   }
 
-  const updateCartCookie = (key: string, quantity: number) => {
+  useEffect(() => {
+    let oOrder: Purchase = { ...order };
+    const sum = cart.reduce((acc, o) => acc + o.quantity * o.price, 0);
+
+    oOrder.total_price = sum;
+    setOrder(oOrder);
+  }, [cart]);
+
+
+  const updateCartCookie = (key: number, quantity: number) => {
     const cartCookie: CartCookies = _getJsonCookie("cart");
     let bUpdateCookie = false;
 
@@ -105,7 +101,7 @@ function Cart({}: CartProps) {
     onSetCartList();
   };
 
-  const deleteFromCart = (key: string) => {
+  const deleteFromCart = (key: number) => {
     const cartCookie: CartCookies = _getJsonCookie("cart");
 
     const aUpdatedCookie = cartCookie.filter((o) => o.product_id != key);
@@ -113,10 +109,10 @@ function Cart({}: CartProps) {
     onSetCartList();
   };
 
-  const handleOrderSubmit = async (e: FormEvent, orderValues: Purchase) => {
+  const handleOrderSubmit = async (e: FormEvent, orderForm: Purchase) => {
     e.preventDefault();
 
-    const oOrderValues = { ...orderValues };
+    const oOrderValues = { ...orderForm };
     oOrderValues.total_price = order.total_price;
     try {
       type OrderData = {
@@ -132,7 +128,7 @@ function Cart({}: CartProps) {
       const orderId = data?.[0]?.id;
 
       await Promise.all(
-        cartList.map(async (oRow) => {
+        cart.map(async (oRow) => {
           await supabase.from('orderDetail').insert({
             size: null,
             price: oRow.price,
@@ -152,17 +148,16 @@ function Cart({}: CartProps) {
     }
   };
 
-  const handleMap = (e: ChangeEvent<HTMLInputElement>, type: string, key: string) => {
+  const handleMap = (e: ChangeEvent<HTMLInputElement>, type: string, key: any) => {
     const handlers: Record<string, () => void> = {
       update: () => {updateCartCookie(key, Number(e))},
       delete: () => deleteFromCart(key),
       detail: () => Router.push(`/product/${key}`),
       order: () => {
         const btnOrderSubmit = document.querySelector<HTMLButtonElement>('#btnOrderSubmit');
-        // btnOrderSubmit?.dispatchEvent(new Event('click'));
         btnOrderSubmit?.click();
       },
-      orderSubmit: () =>{ handleOrderSubmit(e, orderValues)},
+      orderSubmit: () =>{ handleOrderSubmit(e, orderForm)},
     };
 
     handlers[type]();
@@ -180,15 +175,15 @@ function Cart({}: CartProps) {
             {/* 장바구니리스트 */}
             <div className="lg:w-3/5 w-full h-auto lg:px-8 lg:py-14 md:px-6 px-4 md:py-8 py-4 bg-white dark:bg-gray-800 overflow-y-hidden overflow-x-hidden  " id="scroll">
               <p className="lg:text-4xl text-3xl font-black leading-10 text-gray-800 dark:text-white pt-3">장바구니</p>
-              {cartList.length ? (
-                cartList.map((product: CartItemType, idx) => (
+              {cart.length ? (
+                cart.map((product: CartItemType, idx) => (
                   <OriginalCartItem key={idx} product={product} linkOption={false} handleMap={handleMap} />
                 ))
               ) : (
                 <p> 담긴 상품이 없습니다. </p>
               )}
 
-              {cartList.length && orderBtn ? <OrderComponent ref={ref} orderValues={orderValues} handleChange={handleChange} handleMap={handleMap} /> : <></>}
+              {cart.length && orderBtn ? <OrderComponent ref={ref} orderValues={orderForm} handleChange={handleChange} handleMap={handleMap} /> : <></>}
             </div>
 
             {/* 합계 */}
@@ -216,7 +211,7 @@ function Cart({}: CartProps) {
                       {(order.total_price)?.toLocaleString()} 원
                     </p>
                   </div>
-                  {cartList.length ? (
+                  {cart.length ? (
                     <button
                       className={cn(
                         `text-base leading-none w-full py-5 border focus:outline-none 
@@ -252,4 +247,4 @@ function Cart({}: CartProps) {
   );
 }
 
-export default Cart;
+export default Purchase;

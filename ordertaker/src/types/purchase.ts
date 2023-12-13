@@ -5,7 +5,7 @@ export interface CartItem extends Product {
 }
 
 export type CartCookie = {
-  product_id: string;
+  product_id: number;
   quantity: number;
 };
 
