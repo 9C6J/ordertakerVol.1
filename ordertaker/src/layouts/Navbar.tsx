@@ -33,20 +33,24 @@ const Navbar = () => {
               >
                 주문조회
               </a>
-              <a
-                href="/admin/purchaseHistory"
-                className="py-5 px-3 text-gray-700 hover:text-gray-900"
-              >
-                관리자-주문조회
-              </a>
+              
               {
                 loggedIn ? (
-                  <a
-                    href="/product/createProduct"
-                    className="py-5 px-3 text-gray-700 hover:text-gray-900"
-                  >
-                    상품등록
-                  </a>
+                  <>
+                    <a
+                      href="/admin/purchaseHistory"
+                      className="py-5 px-3 text-gray-700 hover:text-gray-900"
+                    >
+                      관리자-주문조회
+                    </a>
+
+                    <a
+                      href="/product/createProduct"
+                      className="py-5 px-3 text-gray-700 hover:text-gray-900"
+                    >
+                      상품등록
+                    </a>
+                  </>
                 ) : ""
               }
               
@@ -107,13 +111,20 @@ const Navbar = () => {
         <a href="/purchase/history" className="block py-2 px-4 text-sm hover:bg-gray-200">
           주문조회
         </a>
-        <a href="/product/createProduct" className="block py-2 px-4 text-sm hover:bg-gray-200">
-          상품등록
-        </a>
-        <a href="/admin/purchaseHistory" className="block py-2 px-4 text-sm hover:bg-gray-200">
-          관리자-주문조회
-        </a>
-
+        
+        {
+          loggedIn ? (
+            <>
+              <a href="/product/createProduct" className="block py-2 px-4 text-sm hover:bg-gray-200">
+                상품등록
+              </a>
+              <a href="/admin/purchaseHistory" className="block py-2 px-4 text-sm hover:bg-gray-200">
+                관리자-주문조회
+              </a>
+            </>
+          ) : ""
+        }
+        
         <a
           href="/purchase"
           className="block py-2 px-4 text-sm hover:bg-gray-200"
