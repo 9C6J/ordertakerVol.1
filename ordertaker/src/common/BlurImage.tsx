@@ -21,7 +21,7 @@ export default function BlurImage(
                 width={props.width || 500}
                 height={props.height || 500}
                 className={cn(
-                  'duration-700 ease-in-out group-hover:opacity-80',
+                  'duration-700 ease-in-out group-hover:opacity-80 m-auto',
                   isLoading
                     ? 'scale-110 blur-2xl grayscale'
                     : 'scale-100 blur-0 grayscale-0'

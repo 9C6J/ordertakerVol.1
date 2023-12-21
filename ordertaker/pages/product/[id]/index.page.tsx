@@ -53,6 +53,7 @@ const DetailProduct = ({product} : {product : Product}) => {
 
   // 장바구니담기
   const handleAddCart = ()=>{
+
     let cart: CartCookies = [];
     const sProductId = product.id;
 
@@ -89,10 +90,10 @@ const DetailProduct = ({product} : {product : Product}) => {
     return flag ? Router.push("/purchase") : ''
   }
 
-
-
   // 주문
   const onSumbit  = async (event:React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     let cart: CartCookies = [];
     const sProductId = product.id;
 
@@ -128,8 +129,9 @@ const DetailProduct = ({product} : {product : Product}) => {
 
   return (
       <form 
-        onSubmit={onSumbit } 
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 content-center" >
+        onSubmit={onSumbit}
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 text-center" 
+      >
         <div className="mb-6">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
@@ -210,7 +212,7 @@ const DetailProduct = ({product} : {product : Product}) => {
           {iSum? iSum.toLocaleString() : 0}원
         </div>
           
-        <div className="flex gap-2">
+        <div className="flex gap-2 justify-center">
           <button
             className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="button"
@@ -221,7 +223,6 @@ const DetailProduct = ({product} : {product : Product}) => {
           <button
             className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
-            onClick={handleAddCart}
           >
             주문
           </button>
@@ -233,7 +234,6 @@ const DetailProduct = ({product} : {product : Product}) => {
             뒤로가기
           </button>
         </div>
-
       </form>
   )
 }
