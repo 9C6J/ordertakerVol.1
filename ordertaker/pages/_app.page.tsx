@@ -20,6 +20,7 @@ function MyApp({ Component, pageProps}: AppProps) {
             <Layout>
               <Component {...pageProps} />
             </Layout>
+              {/* <Component {...pageProps} /> */}
           </AuthProvider>
         </MessageProvider>
     </RecoilRoot>

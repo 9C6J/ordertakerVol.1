@@ -31,8 +31,8 @@ export default function BlurImage(
         </div>
      :
     <div className={props.className}>
-      <div className={"group aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8"}>
-        <p className="flex justify-center items-center text-center text-gray-500">이미지없음</p>
+      <div className={"group aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8 "}>
+        <p className="flex justify-center items-center text-center text-gray-500 h-48">이미지없음</p>
       </div>
     </div>
   )

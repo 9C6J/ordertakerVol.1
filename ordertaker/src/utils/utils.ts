@@ -1,6 +1,7 @@
 import { getCookie } from 'cookies-next';
 import { useState } from 'react'
 
+
 export function useFormFields<T>(
     initialValues: T
 ): [T, (event: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => void, () => void] {

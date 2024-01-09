@@ -9,7 +9,7 @@ const Orange = () => {
   const [isLoading, setLoading] = useState(true);
 
   return (
-    <div className="group flex flex-col items-center justify-start py-36 min-h-screen">
+    <div className="group flex flex-col items-center justify-start py-28 min-h-screen">
       <Image
         alt=""
         width={500}

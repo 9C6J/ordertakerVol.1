@@ -1,14 +1,37 @@
 // pages/index.tsx
 
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import MainLayout from '~/layouts/MainLayout';
 import Orange from '~/components/Orange';
+import Test from './index2';
 
-import {Props} from "~/types/common";
+import Purchase from './purchase/index.page';
+import ProductPage from './product/index.page';
+import { supabase } from '~/api/supabase';
+import { Product } from '~/types/product';
 
-const Home: NextPage = () => {
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { data: products, error } = await supabase.from('product').select('*');
+
+  if (error) {
+    console.error(error);
+    return {
+      redirect: {
+        destination: '/',
+        statusCode: 307,
+      },
+    };
+  } else {
+    return {
+      props: {
+        products,
+      },
+    };
+  }
+};
+
+const Home = ({ products }: { products: Product[] }) => {
 
   return (
     <MainLayout>
@@ -17,12 +40,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h1 className="text-6xl font-bold">
-        <a className="text-blue-600" href="https://nextjs.org">
-        </a>
-      </h1>
-
       <Orange />
+
+      <Test />
+
+      <ProductPage products={products} />
+
+      {/* <Purchase/> */}
     </MainLayout>
   );
 };

@@ -22,7 +22,7 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/product.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/product.tsx", "pages/index2.tsx"],
   "exclude": ["node_modules"]
 }
 //compilerOptions: TypeScript 컴파일러의 옵션을 설정합니다.
